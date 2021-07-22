@@ -32,9 +32,30 @@ class Receipt extends Component {
                     tagihan: 10000,
                     metode: 'virtual-account',
                     status: false
-                }],
+                },{
+                    transaksi: 'test4',
+                    tagihan: 10000,
+                    metode: 'virtual-account',
+                    status: false
+                },{
+                    transaksi: 'test4',
+                    tagihan: 10000,
+                    metode: 'virtual-account',
+                    status: false
+                },{
+                    transaksi: 'test4',
+                    tagihan: 10000,
+                    metode: 'virtual-account',
+                    status: false
+                },{
+                    transaksi: 'test4',
+                    tagihan: 10000,
+                    metode: 'virtual-account',
+                    status: false
+                }
+            ],
             offset: 0,
-            perPage: 2,
+            perPage: 5,
             currentPage: 0,
             pageCount: 0,
             post: [],
@@ -81,28 +102,36 @@ class Receipt extends Component {
                 "  
                 style={{ height:'90vh', backgroundColor: '#A39D9C'}}
             >
-                <div className='flex items-start justify-center my-10'>
-                    <h1 className='text-8xl text-white'>Your Current Receipt</h1>
+                <div className='
+                    flex items-center justify-center flex-col
+                    bg-white rounded-3xl
+                '
+                style={{width:1350, height: 950}}
+                >
+                    <div className='flex items-start justify-center mt-12 mb-4'>
+                        <h1 className='text-8xl text-black'>Your Current Receipt</h1>
+                    </div>
+
+                    <div className='mt-12 mb-8'>
+                        <React.Fragment>
+                            <TableList data={this.state.post} />
+                        </React.Fragment>
+                    </div>
+
+                    <ReactPaginate
+                            previousLabel={"prev"}
+                            nextLabel={"next"}
+                            breakLabel={"..."}
+                            breakClassName={"break-me"}
+                            pageCount={this.state.pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={5}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={"pagination"}
+                            subContainerClassName={"pages pagination"}
+                            activeClassName={"active"}
+                    />
                 </div>
-                {/* <TableList data={this.state.sampleData}/> */}
-
-                <React.Fragment>
-                    <TableList data={this.state.post} />
-                </React.Fragment>
-
-                <ReactPaginate
-                        previousLabel={"prev"}
-                        nextLabel={"next"}
-                        breakLabel={"..."}
-                        breakClassName={"break-me"}
-                        pageCount={this.state.pageCount}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={5}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={"pagination"}
-                        subContainerClassName={"pages pagination"}
-                        activeClassName={"active"}
-                />
             </div>
         )
     }

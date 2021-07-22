@@ -7,6 +7,7 @@ table {
     border-radius: 10px;
     width: 1000px;
     text-align: center;
+    border: 2px solid black;
 }
   
 table td, table th {
@@ -20,7 +21,7 @@ table tr:nth-child(even){
 }
   
 table tr:hover {
-    background-color: #04AA6D;
+    background-color: #F16565;
     color: white;
 }
 
@@ -35,7 +36,7 @@ table th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
-    background-color: #04AA6D;
+    background-color: #ED2A2A;
     color: white;
 }
 

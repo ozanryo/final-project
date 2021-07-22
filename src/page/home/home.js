@@ -20,7 +20,7 @@ class Home extends Component {
                     items-center flex-col
                     py-4
                 "  
-                style={{ height:'150vh', backgroundColor: '##E3D1C5'}}
+                style={{ height:'150vh', backgroundColor: '#A39D9C'}}
             >
                 <Wallet />
                 <Order />

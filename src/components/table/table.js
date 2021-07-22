@@ -25,14 +25,14 @@ class TableList extends Component {
 
     render(){
         return(
-            <table style={{width: 1750}}>
+            <table style={{width: 1100}}>
                 <thead>
                     <tr>
                         <th className='text-3xl py-4' width={"50px"}>No.</th>
-                        <th className='text-3xl py-4' width={"450px"}>Transaction</th>
-                        <th className='text-3xl py-4' width={"450px"}>Tagihan</th>
-                        <th className='text-3xl py-4' width={"450px"}>Metode</th>
-                        <th className='text-3xl py-4' width={"350px"}> Status</th>
+                        <th className='text-3xl py-4' width={"250px"}>Transaction</th>
+                        <th className='text-3xl py-4' width={"250px"}>Tagihan</th>
+                        <th className='text-3xl py-4' width={"250px"}>Metode</th>
+                        <th className='text-3xl py-4' width={"250px"}> Status</th>
                     </tr>
                 </thead>
                 <tbody>
