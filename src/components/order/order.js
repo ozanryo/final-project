@@ -29,7 +29,7 @@ class Order extends Component {
                     harga: 11250
                 }
             ],
-            secondStep: true,
+            secondStep: false,
         }
 
         this.handlePhone = this.handlePhone.bind(this)

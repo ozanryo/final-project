@@ -15,13 +15,13 @@ class Profile extends Component {
                     items-center flex-col
                     py-25
                 "  
-                style={{ height:'90vh', backgroundColor: '#171717AB'}}
+                style={{ height:'90vh', backgroundColor: '#A39D9C'}}
             >
                 <div
                     className="
                         flex items-center
-                        flex-row border-white border-4
-                        rounded-3xl my-50 
+                        flex-row border-black border-4
+                        rounded-3xl my-50 bg-white 
                     " 
                     style={{ width: 1250}}
                 >
@@ -39,14 +39,14 @@ class Profile extends Component {
                             Change Photo
                         </div> */}
                     </div>
-                    <div className='flex flex-col items-start justify-start' style={{marginLeft: 20, paddingLeft: 70, borderLeftWidth: 0.7, borderLeftColor:'white'}}>
-                        <h1 className='text-left text-white my-10' style={{fontSize:75}}>User Profile</h1>
+                    <div className='flex flex-col items-start justify-start' style={{marginLeft: 20, paddingLeft: 70, borderLeftWidth: 0.7, borderLeftColor:'black'}}>
+                        <h1 className='text-left text-black my-10' style={{fontSize:75}}>User Profile</h1>
                         
-                        <h1 className='text-left text-white my-2' style={{fontSize:35}}>Name : </h1>
-                        <h1 className='text-left text-white my-2' style={{fontSize:35}}>Phone : </h1>
-                        <h1 className='text-left text-white my-2' style={{fontSize:35}}>City : </h1>
-                        <h1 className='text-left text-white my-2' style={{fontSize:35}}>Email : </h1>
-                        <h1 className='text-left text-white my-2' style={{fontSize:35}}>Username : </h1>
+                        <h1 className='text-left text-black my-2' style={{fontSize:35}}>Name : </h1>
+                        <h1 className='text-left text-black my-2' style={{fontSize:35}}>Phone : </h1>
+                        <h1 className='text-left text-black my-2' style={{fontSize:35}}>City : </h1>
+                        <h1 className='text-left text-black my-2' style={{fontSize:35}}>Email : </h1>
+                        <h1 className='text-left text-black my-2' style={{fontSize:35}}>Username : </h1>
 
                         <div className='my-10 flex flex-row justify-start items-center' style={{width: 500}}>
                             <div className='
