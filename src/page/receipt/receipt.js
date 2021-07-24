@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ReactPaginate from 'react-paginate';
 import {TableList} from '../../components'
 import './receipt.css'
+import {connect} from 'react-redux'
 
 class Receipt extends Component {
     constructor(props){
@@ -71,7 +72,7 @@ class Receipt extends Component {
     }
 
     postData(){
-        const data = this.state.sampleData;
+        const data = this.props.getReceipt;
         const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
         
         this.setState({pageCount: Math.ceil(data.length / this.state.perPage), post: slice})
@@ -92,7 +93,6 @@ class Receipt extends Component {
     };
 
     render(){
-        console.log(this.state.post)
         return(
             <div
                 className="
@@ -100,19 +100,19 @@ class Receipt extends Component {
                     items-center flex-col
                     py-4
                 "  
-                style={{ height:'90vh', backgroundColor: '#A39D9C'}}
+                style={{ height:'150vh', backgroundColor: '#A39D9C'}}
             >
                 <div className='
                     flex items-center justify-center flex-col
                     bg-white rounded-3xl
                 '
-                style={{width:1350, height: 950}}
+                style={{width:1350, height: 1050}}
                 >
-                    <div className='flex items-start justify-center mt-12 mb-4'>
-                        <h1 className='text-8xl text-black'>Your Current Receipt</h1>
+                    <div className='flex items-start justify-center mt-8 mb-4'>
+                        <h1 className='text-7xl text-black'>Your Current Receipt</h1>
                     </div>
 
-                    <div className='mt-12 mb-8'>
+                    <div className='mt-4 mb-8'>
                         <React.Fragment>
                             <TableList data={this.state.post} />
                         </React.Fragment>
@@ -137,4 +137,9 @@ class Receipt extends Component {
     }
 }
 
-export default Receipt;
+const mapStateToProps=(state)=>({
+    getReceipt: state.order.order
+})
+
+
+export default connect(mapStateToProps)(Receipt);

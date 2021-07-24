@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Select from 'react-dropdown-select';
 import backIcon from "../../assets/orderticon/backward.png"
+import {connect} from 'react-redux'
 
 class Order extends Component {
     constructor(props){
@@ -8,7 +9,7 @@ class Order extends Component {
         this.state={
             phone: "",
             methods: "",
-            pulsa: 0,
+            produk: 1,
             sampleProvider1:[{
                     code: 1,
                     nominal: 5000,
@@ -30,6 +31,7 @@ class Order extends Component {
                 }
             ],
             secondStep: false,
+            provider: [],
         }
 
         this.handlePhone = this.handlePhone.bind(this)
@@ -46,41 +48,102 @@ class Order extends Component {
         this.setState({methods: event.target.value})
     }
     handleNominal(event){
-        this.setState({pulsa: event.target.value})
+        this.setState({produk: event.target.value})
     }
 
     handleSubmit(event){
-        event.preventDefault();
+        // event.preventDefault();
+
+        console.log('Pulsa Terpilih : ', this.state.pulsa)
 
         this.submitFunction(
+            this.props.getUsername,
             this.state.phone,
-            this.state.pulsa,
+            this.state.produk,
             this.state.methods
         )
     }
 
-    submitFunction(inputPhone, inputPulsa, inputMetode){
-        const newOrder = [{
+    submitFunction(inputUser, inputPhone, inputPulsa, inputMetode){
+        const newOrder = {
+            username: inputUser,
             phone: inputPhone,
-            pulsa: inputPulsa,
+            produk: inputPulsa,
             metode: inputMetode
-        }]
+        }
 
         console.log("Pesanan : ",newOrder)
+        this.submitOrder(newOrder)
+    }
+
+    submitOrder(dataToObj){
+        const option = {
+            method: 'POST',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+            body: JSON.stringify(dataToObj)
+        }
+
+        fetch("http://localhost:8888/oneline/topup", option)
+                .then(response => response.json())
+                .then(async json => {
+                    console.log("Order Response : ", json);
+                    // console.log("Order Message : ", json.message)
+                    this.props.setReceipt(json.allReceipt);
+                    this.setState({
+                        phone: "",
+                        methods: "",
+                        produk: 1,
+                        provider: [],
+                        secondStep: false
+                    })
+                    
+                })
+                .catch(err => console.log('Error'))
     }
 
 
     searchProvider(){
-        if(this.state.phone.slice(0, 4) == '0821'){
+        if(this.state.phone.slice(0, 4) === '0821'){
             this.setState({secondStep: true})
-        } else if (this.state.phone.slice(0, 4) == '0822') {
+            this.fetchProduct('telkomsel')
+        } else if (this.state.phone.slice(0, 4) === '0822') {
             this.setState({secondStep: true})
-        } else if(this.state.phone == ''){
+            this.fetchProduct('indosat')
+        } else if(this.state.phone === ''){
             alert('Mohon Mengisi Nomor Telepon')
         }
         else {
             alert('Provider Tidak Tersedia')
         }
+    }
+
+    fetchProduct(product){
+        const option = {
+            method: 'GET',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+        }
+
+        fetch("http://localhost:8888/oneline/product/"+product, option)
+                .then(response => response.json())
+                .then(async json => {
+                    console.log("Order Response : ", json);
+                    // console.log("Order Message : ", json.message)
+                    const dataProvider = json;
+                    console.log("Data : ", dataProvider)
+
+                    this.setState({provider: dataProvider})
+                })
+                .catch(err => console.log('Error'))
     }
 
     render(){
@@ -100,7 +163,7 @@ class Order extends Component {
                                 style={{width:'90%',}}
                                 onClick={()=>this.setState({secondStep: false})}
                             >
-                                <img width='50' src={backIcon} />
+                                <img alt='Back Icon' width='50' src={backIcon} />
                             </div>
                             <div className='text-white text-7xl mt-4 mb-10'>
                                 Pilih Fitur Sesukamu
@@ -116,13 +179,14 @@ class Order extends Component {
                                         style={{width:200, height: 45}}
                                     >
                                         <select 
-                                            className='text-2xl  text-center focus:outline-none ml-10'
+                                            className='text-2xl text-black text-center focus:outline-none ml-10'
                                             onChange={this.handleNominal}
                                             style={{width:150}}
+                                            // value={this.state.provider}
                                         >
                                             {
-                                                this.state.sampleProvider1.map((item, index)=>(
-                                                        <option key={index} value={item.code}>{item.nominal}</option>
+                                                this.state.provider.map((item, index)=>(
+                                                        <option key={index} className='text-black text-xl' value={item.code}>{item.pulsa}</option>
                                                 ))
                                             }
                                         </select>
@@ -141,7 +205,7 @@ class Order extends Component {
                                     </div>
 
                                     <div className='flex items-center justify-center flex-row'>
-                                        <input style={{width: 25, height: 25}} type='radio' id='va' value='virtual-account' 
+                                        <input style={{width: 25, height: 25}} type='radio' id='va' value='virtual account' 
                                         onChange={this.handleMethods} name='methods'/>
                                         <label className='text-4xl text-white mr-5 ml-5' htmlFor='va'>Virtual Account</label>
                                     </div>
@@ -193,4 +257,15 @@ class Order extends Component {
     }
 }
 
-export default Order;
+const mapStateToProps=(state)=>({
+    getUsername: state.forLogin.profile.username,
+})
+
+const mapDispatchToProps=(dispatch)=>({
+    setReceipt: (dataReceipt)=>({
+        type:'ORDER_TAKEN',
+        order: dataReceipt,
+    })
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Order);

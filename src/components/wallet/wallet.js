@@ -30,7 +30,7 @@ class Wallet extends Component {
                         One Wallet
                     </div>
                     <div className='py-12 text-4xl'>
-                        Rp. {this.state.sampleWallet},-
+                        Rp. {this.props.receiveWallet},-
                     </div>
                 </div>
                 <div className='
@@ -48,7 +48,7 @@ class Wallet extends Component {
                     onClick={()=>alert("Pay Now")}
                     >
                         <div>
-                            <img src={payIcon} />
+                            <img alt='Pay Icon' src={payIcon} />
                         </div>
                         <div className='text-3xl text-white mt-4'>Pay</div>
                     </div>
@@ -61,7 +61,7 @@ class Wallet extends Component {
                     style={{width: 120, height: 200}}
                     onClick={()=>alert("Topup Now")}
                     >
-                        <div><img src={topupIcon} /></div>
+                        <div><img alt='Topup Icon' src={topupIcon} /></div>
                         <div className='text-3xl text-white mt-4'>Topup</div>
                     </div>
                     <div className='
@@ -73,7 +73,7 @@ class Wallet extends Component {
                     style={{width: 120, height: 200}}
                     onClick={()=>alert("Explore Now")}
                     >
-                        <div><img src={exploreIcon} /></div>
+                        <div><img alt='Explore Icon' src={exploreIcon} /></div>
                         <div className='text-3xl text-white mt-4'>Explore</div>
                     </div>
                 </div>

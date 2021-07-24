@@ -12,9 +12,12 @@ class TableList extends Component {
     getData(data){
         return data.map((item, index) => {
             return(
-                <tr key={index}>
-                    <td className='text-3xl py-4'>{index + 1}</td>
-                    <td className='text-3xl py-4'>{item.transaksi}</td>
+                <tr style={{height: 120}} key={index}>
+                    <td className='text-3xl py-4'>{item.code}</td>
+                    <td className='text-xl py-4'>
+                        <div>phone : {item.phone}</div>
+                        <div>provider : {item.provider}</div>
+                    </td>
                     <td className='text-3xl py-4'>{item.tagihan}</td>
                     <td className='text-3xl py-4'>{item.metode}</td>
                     <td className='text-3xl py-4'>{item.status ? 'lunas' : 'belum lunas'}</td>

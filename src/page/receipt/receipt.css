@@ -1,15 +1,15 @@
 .pagination {
-  margin-top: 75px;
+  margin-top: 15px;
   display: flex;
   list-style: none;
   outline: none;
 }
 .pagination > .active > a{
-  background-color: black ;
-  border-color: black;
+  background-color: #ED2A2A ;
+  border-color: #ED2A2A;
 }
 .pagination > li > a{
-  border: 1px solid black ;
+  border: 1px solid #ED2A2A ;
   padding-right: 20px;
   padding-left: 20px;
   padding-top: 15px;
@@ -28,8 +28,8 @@
 .pagination > .active > span:hover, 
 .pagination > .active > a:focus, 
 .pagination > .active > span:focus{
-  background-color: black ;
-  border-color: black;
+  background-color: #ED2A2A ;
+  border-color: #ED2A2A;
   outline: none ;
   color: white;
 }
@@ -44,6 +44,6 @@
   border-radius: 15;
   padding-left: 25px;
   padding-right: 25px;
-  background-color: black;
+  background-color: #ED2A2A;
   color: white;
 }

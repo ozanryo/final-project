@@ -7,31 +7,28 @@ import closeIcon from "../../assets/webicons/res/mipmap-xxxhdpi/close.png"
 import {Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
 
-class Signup extends Component {
+class UpdateProfile extends Component {
     constructor(props){
         super(props);
         this.state={
-            gotoLogin: false,
             firstname: "",
             lastname: "",
             phone: "",
             city: "",
-            email: "",
             username: "",
             password: "",
             repassword: "",
+            editedStatus: false
         }
 
         this.handleFirstname = this.handleFirstname.bind(this)
         this.handleLastname = this.handleLastname.bind(this)
         this.handlePhone = this.handlePhone.bind(this)
         this.handleCity = this.handleCity.bind(this)
-        this.handleEmail = this.handleEmail.bind(this)
         this.handleUsername = this.handleUsername.bind(this)
         this.handlePass = this.handlePass.bind(this)
         this.handleRePass = this.handleRePass.bind(this)
     }
-
     handleFirstname(e){
         this.setState({firstname: e.target.value})
     }
@@ -44,9 +41,6 @@ class Signup extends Component {
     handleCity(e){
         this.setState({city: e.target.value})
     }
-    handleEmail(e){
-        this.setState({email: e.target.value})
-    }
     handleUsername(e){
         this.setState({username: e.target.value})
     }
@@ -57,29 +51,39 @@ class Signup extends Component {
         this.setState({repassword: e.target.value})
     }
 
-    submitNewUser(){
+    componentDidMount(){
+        this.setState({
+            firstname: this.props.getProfile.firstname,
+            lastname: this.props.getProfile.lastname,
+            phone: this.props.getProfile.phone,
+            city: this.props.getProfile.address,
+            username: this.props.getProfile.username,
+        })
+    }
+
+    submitUpdate(){
         if(this.state.repassword === this.state.password){
-            const newUser ={
+            const sendUpdate ={
                 firstname: this.state.firstname,
                 lastname: this.state.lastname,
                 phone: this.state.phone,
                 address: this.state.city,
-                email: this.state.email,
-                username: this.state.username,
+                email: this.props.getProfile.email,
+                username: this.props.getProfile.username,
                 password: this.state.password
             }
 
-            console.log("New User : ", newUser)
-            this.submitNewUserAPI(newUser)
+            console.log("New Profile : ", sendUpdate)
+            this.submitUpdateAPI(sendUpdate)
             console.log('Update User Berhasil')
         } else {
             alert('Pastikan Password dan Re Password Sama')
         }
     }
 
-    submitNewUserAPI(dataToObj){
+    submitUpdateAPI(dataToObj){
         const option = {
-            method: 'POST',
+            method: 'PUT',
             mode: "cors",
             headers:{ 
                 "Content-Type": "application/json",
@@ -89,13 +93,13 @@ class Signup extends Component {
             body: JSON.stringify(dataToObj)
         }
 
-        fetch("http://localhost:8888/oneline/registration", option)
+        fetch("http://localhost:8888/oneline/user/update/profile", option)
                 .then(response => response.json())
                 .then(async json => {
-                    console.log("New User Registration Response : ", json);
+                    console.log("Update User Response : ", json);
                     if(json.success === true){
-                        console.log('New User : ', json.newUser)
-                        this.props.setVerifCode(json.verficode)
+                        console.log('New Profile : ', json.userProfile)
+                        this.props.setEditProfile(json.userProfile)
                         console.log("Response : ", json.message)
                     } else {
                         console.log("Response : ", json.message)
@@ -103,10 +107,11 @@ class Signup extends Component {
                 })
                 .catch(err => console.log('Error'))
     }
+    
 
     render(){
-        if(this.props.goVerif){
-            return <Redirect to="/verify" />
+        if(this.props.getEditStatus === false){
+            return <Redirect to="/profile" />
         }
         return(
             <div className="
@@ -123,7 +128,15 @@ class Signup extends Component {
                     " 
                     style={{ width: 1000}}
                 >
-                    <h1 className="text-7xl text-left my-10">Create Your Account</h1>
+                    <div 
+                        className='flex items-center justify-start' 
+                        style={{width:'80%',}}
+                        onClick={()=>this.props.cancelEdit()}
+                    >
+                        <img alt={'close-Icon'} width='50' src={closeIcon} />
+                    </div>
+
+                    <h1 className="text-7xl text-left my-10">Update Your Profile</h1>
 
                     <div
                         className="
@@ -137,13 +150,17 @@ class Signup extends Component {
                         <div className='flex flex-row'>
                             <input 
                                 style={{width: 250, fontSize: 30, marginLeft: 50, marginRight: 10}} 
-                                className="focus:outline-none" type='text' placeholder="Firstname"
-                                value={this.state.firstname} onChange={this.handleFirstname}
+                                className="focus:outline-none" type='text' 
+                                placeholder="Firstname"
+                                value={this.state.firstname}
+                                onChange={this.handleFirstname}
                             />
                             <input 
                                 style={{width: 250, fontSize: 30, borderColor:'black', borderLeftWidth: 0.7, paddingLeft:25, marginLeft: 5, marginRight: 10}} 
-                                className="focus:outline-none" type='text' placeholder="Lastname"
-                                value={this.state.lastname} onChange={this.handleLastname}
+                                className="focus:outline-none" type='text' 
+                                placeholder="Lastname"
+                                value={this.state.lastname}
+                                onChange={this.handleLastname}
                             />
                         </div>
                     </div>
@@ -162,7 +179,8 @@ class Signup extends Component {
                             <input 
                                 style={{width: '90%', fontSize: 30, marginLeft: 20, marginRight: 15}} 
                                 className="focus:outline-none" type='tel' placeholder="Phone"
-                                value={this.state.phone} onChange={this.handlePhone}
+                                value={this.state.phone}
+                                onChange={this.handlePhone}
                             />
                         </div>
                     </div>
@@ -180,13 +198,15 @@ class Signup extends Component {
                             <img alt='City Icon' style={{marginLeft: 25, marginRight: 15}} width='50' src={cityIcon} />
                             <input 
                                 style={{width: '90%', fontSize: 30, marginLeft: 20, marginRight: 15}} 
-                                className="focus:outline-none" type='text' placeholder="City"
-                                value={this.state.city} onChange={this.handleCity}
+                                className="focus:outline-none" type='text' 
+                                placeholder="City"
+                                value={this.state.city}
+                                onChange={this.handleCity}
                             />
                         </div>
                     </div>
 
-                    <div
+                    {/* <div
                         className="
                             flex border-2 border-black my-3
                             w-3/5 h-20 rounded-2xl placeholder-red-500
@@ -199,11 +219,13 @@ class Signup extends Component {
                             <img alt='User Icon' style={{marginLeft: 25, marginRight: 15}} width='50' src={userPic} />
                             <input 
                                 style={{width: '90%', fontSize: 30, marginLeft: 20, marginRight: 15}} 
-                                className="focus:outline-none" type='text' placeholder="Email"
-                                value={this.state.email} onChange={this.handleEmail}
+                                className="focus:outline-none" type='text' 
+                                placeholder="Create Username"
+                                value={this.state.username}
+                                onChange={this.handleUsername}
                             />
                         </div>
-                    </div>
+                    </div> */}
 
                     <div
                         className="
@@ -215,11 +237,13 @@ class Signup extends Component {
                         style={{width: '80%'}}
                     >
                         <div className='flex flex-row'>
-                            <img alt='User Icon' style={{marginLeft: 25, marginRight: 15}} width='50' src={userPic} />
+                            <img alt='Lock Icon' style={{marginLeft: 25, marginRight: 15}} width='50' src={lockPic} />
                             <input 
                                 style={{width: '90%', fontSize: 30, marginLeft: 20, marginRight: 15}} 
-                                className="focus:outline-none" type='text' placeholder="Create Username"
-                                value={this.state.username} onChange={this.handleUsername}
+                                className="focus:outline-none" type='password' 
+                                placeholder="Create Password"
+                                value={this.state.password}
+                                onChange={this.handlePass}
                             />
                         </div>
                     </div>
@@ -237,27 +261,10 @@ class Signup extends Component {
                             <img alt='Lock Icon' style={{marginLeft: 25, marginRight: 15}} width='50' src={lockPic} />
                             <input 
                                 style={{width: '90%', fontSize: 30, marginLeft: 20, marginRight: 15}} 
-                                className="focus:outline-none" type='password' placeholder="Create Password"
-                                value={this.state.password} onChange={this.handlePass}
-                            />
-                        </div>
-                    </div>
-
-                    <div
-                        className="
-                            flex border-2 border-black my-3
-                            w-3/5 h-20 rounded-2xl placeholder-red-500
-                            justify-start items-center
-                            bg-white
-                        " 
-                        style={{width: '80%'}}
-                    >
-                        <div className='flex flex-row'>
-                            <img alt='Lock Icon' style={{marginLeft: 25, marginRight: 15}} width='50' src={lockPic} />
-                            <input 
-                                style={{width: '90%', fontSize: 30, marginLeft: 20, marginRight: 15}} 
-                                className="focus:outline-none" type='password' placeholder="Re-Enter Password"
-                                value={this.state.repassword} onChange={this.handleRePass}
+                                className="focus:outline-none" type='password' 
+                                placeholder="Re-Enter Password"
+                                value={this.state.repassword}
+                                onChange={this.handleRePass}
                             />
                         </div>
                     </div>
@@ -271,9 +278,9 @@ class Signup extends Component {
                             text-2xl text-white
                         " 
                         style={{width: '80%', height: 70}}
-                        onClick={()=> this.submitNewUser()}
+                        onClick={()=> this.submitUpdate()}
                     >
-                        Register
+                        Update
                     </div>
                 </div>
             </div>
@@ -282,15 +289,19 @@ class Signup extends Component {
 }
 
 const mapStateToProps=(state)=>({
-    goVerif: state.verify.gotoVerif
+    getProfile: state.edit.profile,
+    getEditStatus: state.edit.status,
 })
 
 const mapDispatchToProps=(dispatch)=>({
-    setVerifCode: (code) => dispatch({
-        type: 'GOTO_VERIF',
-        verifCode: code,
-    }),
+    setEditProfile: (newProfle)=>dispatch({
+        type: 'EDIT_DONE',
+        profile: newProfle,
 
+    }),
+    cancelEdit: ()=>dispatch({
+        type: 'EDIT_CANCEL'
+    })
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Signup);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateProfile);

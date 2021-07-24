@@ -3,26 +3,41 @@ import {MenuBar} from "./menu"
 import { Link } from "react-router-dom"
 import "./navigation.css"
 import compLogo from "../../assets/logo/logo-landscape.png"
+import {connect} from 'react-redux'
 
 class NavBar extends Component{
     render(){
         return(
             <div className="NavbarItems">
                 <h1 className="navbar-logo">
-                    <img width="150" height="50" src={compLogo} alt="logo"/>
+                    <img width="350" height="50" src={compLogo} alt="logo"/>
                 </h1>
                 <div className="nav-menu"
                 >
                     {
                         MenuBar.map((item, index)=>{
-                            return(
-                                <div key={index} >
-                                    <Link className="nav-links" to={item.url}>
-                                        {item.title}
-                                    </Link>
-                                </div>
-                            )
-                        })
+                            if(!this.props.getLoginStatus){
+                                if( item.title === "Login" || item.title === "Sign-Up"){
+                                    return (
+                                            <div key={index} >
+                                                <Link className="nav-links" to={item.url}>
+                                                    {item.title}
+                                                </Link>
+                                            </div>
+                                    )
+                                }
+                            } else {
+                                if(item.title === "Home" || item.title === "Receipt" || item.title === "Profile")
+                                    return (
+                                        <div key={index} >
+                                            <Link className="nav-links" to={item.url}>
+                                                {item.title}
+                                            </Link>
+                                        </div>
+                                    )
+                                }
+                            }
+                        )
                     }
                 </div>
             </div>
@@ -30,4 +45,8 @@ class NavBar extends Component{
     }
 }
 
-export default NavBar;
+const mapStateToProps=(state)=>({
+    getLoginStatus: state.forLogin.status
+})
+
+export default connect(mapStateToProps)(NavBar);

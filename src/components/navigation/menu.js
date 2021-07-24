@@ -8,7 +8,8 @@ export const MenuBar = [
     }, {
         title: 'Profile',
         url: '/profile'
-    }, {
+    }, 
+    {
         title: 'Login',
         url: '/login'
     }, {

@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import {Wallet, Order} from "../../components"
-import payIcon from '../../assets/walleticon/pay-now.png'
-import exploreIcon from '../../assets/walleticon/explore.png'
-import topupIcon from '../../assets/walleticon/wallet-circle.png'
+import {connect} from 'react-redux'
 
 class Home extends Component {
     constructor(props){
@@ -22,11 +20,15 @@ class Home extends Component {
                 "  
                 style={{ height:'150vh', backgroundColor: '#A39D9C'}}
             >
-                <Wallet />
+                <Wallet receiveWallet={this.props.getWallet}/>
                 <Order />
             </div>
         )
     }
 }
 
-export default Home;
+const mapStateToProps=(state)=>({
+    getWallet: state.forLogin.profile.wallet
+})
+
+export default connect(mapStateToProps)(Home);
