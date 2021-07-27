@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, FlatList } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, FlatList, ToastAndroid, Alert } from 'react-native'
 import { Avatar } from 'react-native-elements'
 import Icon from "react-native-vector-icons/Ionicons"
 import {ModalDetails} from '../../components/modal'
@@ -27,21 +27,24 @@ class Profile extends Component {
                 }, {
                     id: 1,
                     icon: 'images',
-                    caption: 'Albums',
+                    caption: 'Themes',
                     size: 40,
                     color: 'white',
+                    click: ()=> Alert.alert('Masuk ke Theme')
                 }, {
                     id: 2,
                     icon: 'settings',
                     caption: 'Settings',
                     size: 40,
                     color: 'white',
+                    click: ()=> Alert.alert('Masuk ke settings')
                 }, {
                     id:3,
                     icon: 'exit',
                     caption: 'Logout',
                     size: 40,
                     color: 'white',
+                    click: ()=> Alert.alert('Logout')
                 },
             ],
             detailsInfo: false,

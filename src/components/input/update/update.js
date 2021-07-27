@@ -40,29 +40,32 @@ class UpdateInput extends Component {
         }
     }
     
-    updateProfile(){
+    updateProfile=()=>{
         if(
             this.state.firstname == "" || this.state.lastname == "" ||
             this.state.phone == "" || this.state.address =="" ||
-            this.state.email == "" || this.state.username == "" ||
+            this.state.email == "" || 
             this.state.password == "" || this.state.repassword == ""
         ){
             ToastAndroid.show('Mohon Lengkapi Data', ToastAndroid.SHORT)
         } else{
             if(this.state.password == this.state.repassword){
-                const newUser = {
+                const newProfile = {
                     firstname: this.state.firstname,
                     lastname: this.state.lastname,
                     phone: this.state.phone,
                     address: this.state.address,
                     email: this.state.email,
-                    username: this.state.username,
+                    username: 'Ozan997',
                     password: this.state.password,
                 }
         
-                console.log('New User : ', newUser)
-        
+                console.log('New Profile : ', newProfile)
+
+                this.props.sendBack();
+
                 ToastAndroid.show('Mengirim Data User Baru ', ToastAndroid.SHORT)
+                
             }else{
                 ToastAndroid.show('Pastikan Password yang diinput samas ', ToastAndroid.SHORT)
             }

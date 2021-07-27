@@ -65,6 +65,7 @@ class SubmitOrderComponent extends Component {
             metode: this.state.method,
         }
 
+        this.props.finishOrder()
         console.log('Pesanan Baru : ', newOrder)
     }
 

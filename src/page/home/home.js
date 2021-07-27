@@ -23,13 +23,21 @@ class Home extends Component {
         this.setState({phone: "", nextStep: false})
     }
 
+    doneStep=()=>{
+        this.setState({phone: "", nextStep: false})
+    }
+
     render(){
         return(
             <View style={styles.main}>
                 <PaymentComponent getWallet={this.state.wallet}/>
                 {
                     this.state.nextStep?
-                    <SubmitOrderComponent getPhoneNumber={this.state.phone} cancelButton={()=>this.cancelStep()}/>
+                    <SubmitOrderComponent 
+                        getPhoneNumber={this.state.phone} 
+                        cancelButton={()=>this.cancelStep()}
+                        finishOrder={this.doneStep}
+                    />
                     :
                     <OrderComponent phoneFunction={this.getPhone}/>
                 }

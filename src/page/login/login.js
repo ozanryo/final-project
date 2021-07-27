@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native'
 import {LoginInput} from '../../components/input'
 import Icon from "react-native-vector-icons/Ionicons"
+import {ModalLoading} from '../../components/modal'
 
 class Login extends Component {
     constructor(props){
@@ -23,6 +24,7 @@ class Login extends Component {
                         <Text style={styles.registrationLink}>Register Now</Text>
                     </TouchableOpacity>
                 </View> 
+                <ModalLoading modalShow={false} />
             </View>
         )
     }

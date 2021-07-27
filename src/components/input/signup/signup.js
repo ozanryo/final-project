@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, StyleSheet,TouchableOpacity, ToastAndroid, ScrollView } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
+import {connect} from 'react-redux'
 
 class RegisterInput extends Component {
     constructor(props){
@@ -63,7 +64,8 @@ class RegisterInput extends Component {
                 console.log('New User : ', newUser)
         
                 ToastAndroid.show('Mengirim Data User Baru ', ToastAndroid.SHORT)
-                this.props.sendBack();
+                // this.props.sendBack();
+                this.props.setVerif('3212')
             }else{
                 ToastAndroid.show('Pastikan Password yang diinput samas ', ToastAndroid.SHORT)
             }
@@ -375,6 +377,15 @@ class RegisterInput extends Component {
     }
 }
 
+const mapDispatchToProps=(dispatch)=>({
+    setVerif: (code) => dispatch({
+        type:'GET_VERIFCODE',
+        verifCode: code,
+    })
+})
+
+export default connect(null, mapDispatchToProps)(RegisterInput);
+
 const styles = StyleSheet.create({
     container: {
         flex: 1, 
@@ -426,5 +437,3 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     }
 })
-
-export default RegisterInput;

@@ -29,6 +29,10 @@ class Update extends Component {
         this.setState({modalPassword: false, message: ""})
     }
 
+    goBack=()=>{
+        this.props.navigation.navigate('Profile');
+    }
+
     render(){
         return(
             <View style={styles.main}>
@@ -37,6 +41,7 @@ class Update extends Component {
                 </View>
                 <UpdateInput 
                     infoPassword={this.infoPassword}
+                    sendBack={this.goBack}
                 />
                 <ModalUpdate 
                     modalShow={this.state.modalPassword}

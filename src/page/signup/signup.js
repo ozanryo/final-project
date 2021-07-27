@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import {View, Text, StyleSheet, ScrollView} from 'react-native'
 import {RegisterInput} from '../../components/input'
-import {ModalSignup} from '../../components/modal'
+import {ModalSignup, ModalVerification} from '../../components/modal'
+import {connect} from 'react-redux'
 
 class Register extends Component {
     constructor(props){
@@ -70,10 +71,20 @@ class Register extends Component {
                     modalContent={this.state.message}
                     closeShow={()=>this.closePasswordInfo()}
                 />
+                <ModalVerification 
+                    modalShow={this.props.getVerifStat}
+                    goBack={this.goBack}
+                />
             </View>
         )
     }
 }
+
+const mapStateToProps = (state) => ({
+    getVerifStat: state.verification.verifStat
+})
+
+export default connect(mapStateToProps)(Register);
 
 const styles = StyleSheet.create({
     main:{
@@ -93,4 +104,3 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Register;
