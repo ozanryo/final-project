@@ -262,6 +262,30 @@ public class dbmessage {
             e.printStackTrace();
         }
     }
+    public void sendGetAllReceiptUser(String inputMessage){
+        connectionFactory = new ConnectionFactory();
+        connectionFactory.setHost("localhost");
+
+        try (
+                Connection con = connectionFactory.newConnection();
+                Channel channel = con.createChannel();
+        ) {
+
+            channel.queueDeclare("respondGetAllReceipt", false, false, false, null);
+
+            channel.basicPublish(
+                    "",
+                    "respondGetAllReceipt",
+                    null,
+                    inputMessage.getBytes(StandardCharsets.UTF_8)
+            );
+
+            System.out.println("[x] Sent " + inputMessage);
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
 
     // RestAPI --> RabbitMQ --> DB --> Provider

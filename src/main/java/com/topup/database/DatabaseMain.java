@@ -17,6 +17,7 @@ public class DatabaseMain {
             receive.askAllData();  // Menerima pesan dari rest api controller dan mengirim list produk
             receive.askAllData2();  // Menerima pesan dari rest api controller dan mengirim list produk2
             receive.askAllData3();
+            receive.receiptUser();
             receive.ListProductFromProviderToDB(); // Menerima Pesan List Produk Provider
             receive.ListProductFromProvider2ToDB();  // Menerima Pesan List Produk Provider2
             receive.messageBuyFromUser(); // Menerima pesan dari res api controller

@@ -238,6 +238,24 @@ public class userService {
             e.printStackTrace();
         }
     }
+    public void getAllUserReceipt(User input) throws IOException, TimeoutException {
+        System.out.println("Memulai proses...");
+        connectMyBatis();
+        try{
+            System.out.println(input.getUsername());
+            List<Order> getUserOrderList = session.selectList("topupPulsa.getOrderByUsername", input.getUsername());
+            RespondUser respondUser = new RespondUser();
+            respondUser.setOrderData(getUserOrderList);
+            respondUser.changeSuccessStatus();
+            respondUser.setMessage("Seluruh Receipt berhasil didapatkan");
+
+            String responseMessage = new Gson().toJson(respondUser);
+            send.sendGetAllReceiptUser(responseMessage);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     // Input Orderan ke Database
     public void inputOrderFromUser(Order order) throws IOException, TimeoutException {
@@ -371,9 +389,13 @@ public class userService {
                         }
                     } else {
                         System.out.println("Wallet User : " + order.getUsername() + "tidak cukup");
-                        Message notEnough = new Message("Wallet anda Tidak Cukup");
-                        String inputNotEnough = new Gson().toJson(notEnough);
-                        send.sendWalletPaymentDone(inputNotEnough);
+                        RespondUser inputNotEnough = new RespondUser();
+                        inputNotEnough.setMessage("E-Wallet Anda Tidak Cukup");
+                        inputNotEnough.setUserProfile(user);
+
+                        String NotEnough = new Gson().toJson(inputNotEnough);
+
+                        send.sendWalletPaymentDone(NotEnough);
                     }
                 } else if (order.getMetode().equals("virtual account")) {
                     this.transferUsername = order.getUsername();

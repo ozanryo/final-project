@@ -93,15 +93,16 @@ public class RestApiController {
         }
         return new ResponseEntity<>(conReceive.receiveList2FromDB(), HttpStatus.CREATED);
     }
-    @RequestMapping(value = "/receipt/", method = RequestMethod.GET)
-    public ResponseEntity<?> getOrder() throws SQLException, IOException, TimeoutException {
+    @RequestMapping(value = "/receipt/all/", method = RequestMethod.POST)
+    public ResponseEntity<?> getOrder(@RequestBody User user) throws SQLException, IOException, TimeoutException {
         logger.info("Sending information to show the product from all provider");
+        System.out.println(user.getUsername());
         try{
-            sangPengirim.requestDataProvider2();
+            sangPengirim.getReceiptUser(user);
         } catch (Exception e){
             e.printStackTrace();
         }
-        return new ResponseEntity<>(conReceive.receiveList2FromDB(), HttpStatus.CREATED);
+        return new ResponseEntity<>(conReceive.receiveAllReceiptUser(), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/product/xl", method = RequestMethod.GET)

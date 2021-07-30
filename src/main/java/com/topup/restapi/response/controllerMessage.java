@@ -82,6 +82,22 @@ public class controllerMessage {
             e.printStackTrace();
         }
     }
+    public void getReceiptUser(User user) throws IOException, TimeoutException {
+        String message = new Gson().toJson(user);
+        System.out.println(message);
+        ConnectionFactory conFac = new ConnectionFactory();
+        conFac.setHost("localhost");
+        Connection con = conFac.newConnection();
+        Channel channel = con.createChannel();
+
+        try{
+            channel.queueDeclare("requestReceiptUser", false, false, false, null);
+            channel.basicPublish("", "requestReceiptUser", null, message.getBytes(StandardCharsets.UTF_8));
+            System.out.println("[x] Sending json string to RabbitMQ");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 
     // Meminta pesan untuk request data ke provider dari RestAPI ke DB APP

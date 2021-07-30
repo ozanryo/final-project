@@ -161,7 +161,23 @@ public class controllerReceive {
 
         return message;
     }
+    public String receiveAllReceiptUser() throws IOException, TimeoutException {
+        ConnectionFactory conFac = new ConnectionFactory();
+        conFac.setHost("localhost");
+        Connection con = conFac.newConnection();
+        Channel ch = con.createChannel();
 
+        ch.queueDeclare("respondGetAllReceipt", false, false, false, null);
+        GetResponse getResponse;
+        do {
+            getResponse = ch.basicGet("respondGetAllReceipt", true);
+        } while (getResponse==null);
+
+        String message = new String(getResponse.getBody(), "UTF-8");
+        System.out.println(" [x] Received '" + message + "'");
+
+        return message;
+    }
 
     public String receiveErrorProviderCodeFromDB() throws IOException, TimeoutException {
         ConnectionFactory conFac = new ConnectionFactory();

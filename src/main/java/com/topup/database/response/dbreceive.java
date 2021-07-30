@@ -132,6 +132,30 @@ public class dbreceive {
             e.printStackTrace();
         }
     }
+    public void receiptUser(){
+        try{
+            connectRabbit();
+            ch = con.createChannel();
+            ch.queueDeclare("requestReceiptUser", false, false, false, null);
+
+            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+                System.out.println(" [x] Received " + message);
+
+                try{
+                    System.out.println(message);
+                    User user = new Gson().fromJson(message, User.class);
+
+                    prService.getAllUserReceipt(user);
+                } catch(TimeoutException e){
+                    e.printStackTrace();
+                }
+            };
+            ch.basicConsume("requestReceiptUser", true, deliverCallback, consumerTag -> { });
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 
     // DB APP --> Provider
