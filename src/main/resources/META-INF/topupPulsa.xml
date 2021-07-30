@@ -1,0 +1,154 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="topupPulsa">
+
+    <!-- Melakukan input user baru ke db newuser -->
+    <insert id="registrationUser" parameterType="com.topup.database.model.user.NewUser">
+        INSERT INTO newuser (firstname, lastname, address, phone, email, username, password, verifcode, verifstat)
+        VALUES (#{firstname}, #{lastname}, #{address}, #{phone}, #{email}, #{username}, #{password}, #{verifcode}, #{statusVerif});
+    </insert>
+
+    <!-- Mencari User berdasarkan kode verifikasi pada db user -->
+    <resultMap id="getUserByVerifCode" type="com.topup.database.model.user.NewUser">
+        <result property="verifcode" column="verifcode" />
+    </resultMap>
+    <select id="newUserConfirmation" resultMap="getUserByVerifCode">
+        SELECT * FROM newuser WHERE verifcode=#{verifcode};
+    </select>
+
+    <!-- Melakukan Update User untuk Status -->
+    <update id="updateVerification" parameterType="com.topup.database.model.user.NewUser">
+        UPDATE newuser SET verifstat=#{statusVerif} WHERE username=#{username};
+    </update>
+
+    <!-- Mencari Username pada db user -->
+    <resultMap id="getUserByUsernme" type="com.topup.database.model.user.User">
+        <result property="username" column="username" />
+    </resultMap>
+    <select id="searchUserByUsername" resultMap="getUserByUsernme">
+        SELECT * FROM user WHERE username=#{username};
+    </select>
+
+    <!-- Update Profile User -->
+    <update id="updateProfileUser" parameterType="com.topup.database.model.user.User">
+        UPDATE user SET firstname=#{firstname}, lastname=#{lastname}, phone=#{phone}, address=#{address}, email=#{email}, password=#{password}, status=#{loginstat}
+        WHERE username=#{username};
+    </update>
+
+    <!-- Memasukan user yang sudah terverifikasi ke db user -->
+    <insert id="insertUser" parameterType="com.topup.database.model.user.User">
+        INSERT INTO user (firstname, lastname, address, phone, email, username, password, wallet, status)
+        VALUES (#{firstname}, #{lastname}, #{address}, #{phone}, #{email}, #{username}, #{password}, #{wallet}, #{loginstat});
+    </insert>
+
+    <!-- Update Login Status untuk User saat login atau logout -->
+    <update id="userLoginStatus" parameterType="com.topup.database.model.user.User">
+        UPDATE user SET status=#{loginstat} WHERE username=#{username};
+    </update>
+
+    <!-- Update Wallet User -->
+    <update id="updateUserWallet" parameterType="com.topup.database.model.user.User">
+        UPDATE user SET wallet=#{wallet} WHERE username=#{username};
+    </update>
+
+    <!-- List Mitra Provider -->
+    <resultMap id="getProvider" type="com.topup.database.model.provider.Provider">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="providerlogo" column="logo"/>
+    </resultMap>
+    <select id="listProvider" resultMap="getProvider">
+        SELECT * FROM produk;
+    </select>
+
+    <!-- List Produk Telkomsel -->
+    <resultMap id="getTelkomselProduct" type="com.topup.provider.model.Provider">
+        <result property="code" column="id"/>
+        <result property="pulsa" column="pulsa"/>
+        <result property="harga" column="harga"/>
+        <result property="terjual" column="terjual"/>
+    </resultMap>
+    <select id="listTelkomselProduct" resultMap="getTelkomselProduct">
+        SELECT * FROM telkomsel;
+    </select>
+    <select id="searchTelkomselProductById" resultMap="getTelkomselProduct">
+        SELECT * FROM telkomsel WHERE id=#{code};
+    </select>
+
+    <update id="updateTelkomselCount" parameterType="com.topup.provider.model.Provider">
+        UPDATE telkomsel SET terjual=#{terjual} WHERE id=#{code};
+    </update>
+
+    <!-- List Produk XL -->
+    <resultMap id="getXLProduct" type="com.topup.provider2.model.Provider2">
+        <result property="code" column="id"/>
+        <result property="pulsa" column="pulsa"/>
+        <result property="harga" column="harga"/>
+        <result property="terjual" column="terjual"/>
+    </resultMap>
+    <select id="listXLProduct" resultMap="getXLProduct">
+        SELECT * FROM xl;
+    </select>
+
+    <!-- List Produk Indosat -->
+    <resultMap id="getIndosatProduct" type="com.topup.provider2.model.Provider2">
+        <result property="code" column="id"/>
+        <result property="pulsa" column="pulsa"/>
+        <result property="harga" column="harga"/>
+        <result property="terjual" column="terjual"/>
+    </resultMap>
+    <select id="listIndosatProduct" resultMap="getIndosatProduct">
+        SELECT * FROM indosat;
+    </select>
+    <select id="searchIndosatProductById" resultMap="getIndosatProduct">
+        SELECT * FROM indosat WHERE id=#{code};
+    </select>
+
+    <update id="updateIndosatCount" parameterType="com.topup.provider2.model.Provider2">
+        UPDATE indosat SET terjual=#{terjual} WHERE id=#{code};
+    </update>
+
+    <!-- Insert Order To DB Pesanan :: Pembelian via e wallet -->
+    <insert id="insertOrder" parameterType="com.topup.database.model.order.Order">
+        INSERT INTO pesanan (username, phone, produk, provider, tagihan, metode, status)
+        VALUES (#{username}, #{phone}, #{produk}, #{provider}, #{tagihan}, #{metode}, #{status});
+    </insert>
+    
+    <resultMap id="listOrder" type="com.topup.database.model.order.Order">
+        <result property="code" column="id" />
+        <result property="username" column="username" />
+        <result property="phone" column="phone" />
+        <result property="produk" column="produk" />
+        <result property="provider" column="provider" />
+        <result property="tagihan" column="tagihan" />
+        <result property="metode" column="metode" />
+        <result property="status" column="status" />
+    </resultMap>
+    <select id="getOrderById" resultMap="listOrder">
+        SELECT * FROM pesanan WHERE id=#{code};
+    </select>
+    <select id="getOrderByUsername" resultMap="listOrder">
+        SELECT * FROM pesanan WHERE username=#{username};
+    </select>
+
+    <select id="getOrderCode" parameterType = "com.topup.database.model.order.Order" resultType="String">
+        SELECT id FROM pesanan WHERE username=#{username} AND phone=#{phone} AND metode=#{metode} AND produk=#{produk} AND provider=#{provider} AND tagihan=#{tagihan} AND status=#{status};
+    </select>
+
+    <update id="updatePrice" parameterType="com.topup.database.model.order.Order">
+        UPDATE pesanan SET tagihan=#{tagihan} WHERE id=#{code};
+    </update>
+
+    <update id="updateOrderStatus" parameterType="com.topup.database.model.order.Order">
+        UPDATE pesanan SET status=#{status};
+    </update>
+
+    <!-- Database Bank :: Pembelian via virtual account -->
+    <insert id="insertBankTransaction" parameterType="com.topup.bank.model.Bank">
+        INSERT INTO transaksi (transfercode, status, username, phone, produk, provider, tagihan)
+        VALUES (#{transfer_code}, #{status}, #{username}, #{phone}, #{produk}, #{provider}, #{tagihan});
+    </insert>
+
+</mapper>
