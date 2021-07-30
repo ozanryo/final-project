@@ -21,9 +21,37 @@ class ReceiptTable extends Component {
     }
 
     componentDidMount(){
-        this.setState({
-            data: this.props.data
-        })
+        // this.setState({
+        //     data: this.props.data
+        // })
+
+        this.getReceiptData(this.props.sendUsername)
+    }
+
+    getReceiptData(input){
+        const user = {
+            username: input
+        }
+        const option = {
+            method: 'POST',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+            body:JSON.stringify(user)
+        }
+
+        return fetch("http://192.168.100.5:8888/oneline/receipt/all/", option)
+            .then(response => response.json())
+            .then( async json => {
+                console.log("Receipt Log Response : ", json);
+
+                this.setState({data: json.orderData})
+
+            })
+            .catch(err => console.log('Error'))
     }
 
     obtainData(data){
@@ -38,6 +66,7 @@ class ReceiptTable extends Component {
     }
 
     render(){
+        console.log(this.props.sendUsername)
         return(
             <FlatList 
                 style={styles.main}

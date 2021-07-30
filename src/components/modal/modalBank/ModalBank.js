@@ -7,7 +7,7 @@ import { View, Text,
 import Icon from 'react-native-vector-icons/Ionicons'
 import {connect} from 'react-redux'
 
-class ModalReceiptOrder extends Component {
+class ModalBank extends Component {
     constructor(props){
         super(props);
         this.state={
@@ -20,10 +20,11 @@ class ModalReceiptOrder extends Component {
     }
 
     render(){
-        console.log('Phone : ', this.props.getReceiptWallet.phone)
-        console.log('Tagihan : ', this.props.getReceiptWallet.tagihan)
-        console.log('Metode : ', this.props.getReceiptWallet.metode)
-        console.log('Status  : ', this.props.getReceiptWallet.status)
+        console.log('Phone : ', this.props.getReceiptBank.phone)
+        console.log('Tagihan : ', this.props.getReceiptBank.tagihan)
+        console.log('Metode : ', this.props.getReceiptBank.metode)
+        console.log('Status  : ', this.props.getReceiptBank.status)
+        console.log('Kode : ', this.props.getReceiptBank.transferCode)
         return(
             <Modal
                 animationType='slide'
@@ -39,12 +40,15 @@ class ModalReceiptOrder extends Component {
                         </View>
                         <Text style={styles.titleTxt}>Hasil Transaksi</Text>
                         <View style={{marginHorizontal: 10, marginTop:15, marginBottom: 20}}>
-                            <Text style={styles.textCaption}>Phone : {this.props.getReceiptWallet.phone}</Text>
-                            <Text style={styles.textCaption}>Tagihan : {this.props.getReceiptWallet.tagihan}</Text>
-                            <Text style={styles.textCaption}>Metode : {this.props.getReceiptWallet.metode}</Text>
-                            <Text style={styles.textCaption}>Status Pembayaran : {this.props.getReceiptWallet.status ? 'Lunas' : 'Belum Lunas'}</Text>
+                            <Text style={styles.textCaption}>Phone : {this.props.getReceiptBank.phone}</Text>
+                            <Text style={styles.textCaption}>Tagihan : {this.props.getReceiptBank.tagihan}</Text>
+                            <Text style={styles.textCaption}>Metode : {this.props.getReceiptBank.metode}</Text>
+                            <Text style={styles.textCaption}>Status Pembayaran : {this.props.getReceiptBank.status ? 'Lunas' : 'Belum Lunas'}</Text>
+                            <Text style={styles.textCaption}>Kode Transfer : {this.props.getReceiptBank.transferCode}</Text>
                         </View>
-                        
+                        <View style={{width: 320,}}>
+                            <Text style={styles.footerTxt}>Mohon Membayar Melalui Bank</Text>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -53,8 +57,8 @@ class ModalReceiptOrder extends Component {
 }
 
 const mapStateToProps = state => ({
-    getReceiptStat: state.wallet.orderStat,
-    getReceiptWallet: state.wallet
+    getReceiptStat: state.bank.orderStat,
+    getReceiptBank: state.bank
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -63,7 +67,7 @@ const mapDispatchToProps = dispatch => ({
     })
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModalReceiptOrder);
+export default connect(mapStateToProps, mapDispatchToProps)(ModalBank);
 
 const styles = StyleSheet.create({
     modalLayout:{
@@ -106,14 +110,20 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         textAlign: 'left'
     },
+    textCaption: {
+        fontSize: 18,
+    },
     titleTxt:{
-        fontSize:25,
+        fontSize: 25,
+        textAlign: 'center',
+        marginTop: 20,
+        marginBottom:10,
+    },
+    footerTxt:{
+        fontSize: 25,
         textAlign: 'center',
         marginTop: 15,
-        marginBottom: 10,
-    },
-    textCaption:{
-        fontSize: 18
-    },
+        marginBottom: 20,
+    }
 })
 

@@ -4,7 +4,7 @@ import Icon from "react-native-vector-icons/Ionicons"
 import {Picker} from '@react-native-picker/picker'
 import {connect} from 'react-redux'
 import ProductTable from '../../components/table/product'
-import {ModalReceiptOrder} from '../../components/modal'
+import {ModalReceiptOrder, ModalBank} from '../../components/modal'
 
 class OrderCompletion extends Component {
     constructor(props){
@@ -39,13 +39,18 @@ class OrderCompletion extends Component {
 
         console.log('Topup Product : ', topupData)
 
-        this.topupAPI(topupData)
+        if(topupData.metode == 'wallet'){
+            this.topupAPI(topupData)
+        }else {
+            this.topupAPIBank(topupData)
+        }
+        
     }
 
-    componentDidUpdate(prevProps, prevState){
-        console.log('Previous Props : ', prevProps);
-        console.log('Previous State : ', prevState)
-    }
+    // componentDidUpdate(prevProps, prevState){
+    //     console.log('Previous Props : ', prevProps);
+    //     console.log('Previous State : ', prevState)
+    // }
 
     topupAPI(dataToObj){
         const option = {
@@ -62,30 +67,44 @@ class OrderCompletion extends Component {
         return fetch("http://192.168.100.5:8888/oneline/topup", option)
             .then(response => response.json())
             .then(async json => {
-                // console.log("Login Response : ", json);
-                // console.log('Methods : ', json.metode)
-                // console.log('status : ', json.success)
-                if(json.success){
-                    if(json.metode == 'wallet'){
-                        this.props.doneTransaction(json.receipt)
-                        this.props.getAllReceipt(json.allReceipt)
-
-                        const sendMessage = json.message
-                        this.setState({receipt: json.receipt, transactionDone:true, message:sendMessage})
-                        this.props.doneTransaction(json.receipt, sendMessage)
-                    }else{
-                        
-                        this.props.getAllReceipt(json.allReceipt)
-
-                        const sendMessage = json.message + '\nKode Transfer : ' + json.receiptBank.transfer_code + '\nTagihan : ' + json.receiptBank.tagihan;
-                        this.setState({receipt: json.receiptBank, transactionDone:true, message:sendMessage})
-                        this.props.doneTransaction(json.receiptBank, sendMessage)
-                    }
-                }else{
-                    console.log('Message : ', json.message)
-                }
-
+                console.log('Status : ', json.success)
+                this.props.doneTransaction(json.receipt, json.message)
+                this.props.getAllReceipt(json.allReceipt)
+                this.props.setReceiptWallet(
+                    json.receipt.phone,
+                    json.receipt.metode,
+                    json.receipt.tagihan,
+                    json.receipt.status,
+                )
                 console.log("Response : ", json.message)
+            })
+            .catch(err => console.log('Error'))
+    }
+
+    topupAPIBank(dataToObj){
+        const option = {
+            method: 'POST',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+            body: JSON.stringify(dataToObj)
+        }
+
+        return fetch("http://192.168.100.5:8888/oneline/topup", option)
+            .then(response => response.json())
+            .then(async json => {
+                this.props.getAllReceipt(json.allReceipt)
+                this.props.setReceiptBank(
+                    json.receiptBank.phone,
+                    json.receiptBank.metode,
+                    json.receiptBank.tagihan,
+                    json.receiptBank.status,
+                    json.receiptBank.transfer_code,
+                )
+                this.props.doneTransaction(json.receiptBank, json.message)
             })
             .catch(err => console.log('Error'))
     }
@@ -93,6 +112,13 @@ class OrderCompletion extends Component {
     closeReceipt=()=>{
         this.props.navigation.navigate('Home')
         this.props.finishReceipt()
+        this.props.closeReceiptWallet()
+    }
+
+    closeReceiptBank=()=>{
+        this.props.navigation.navigate('Home')
+        this.props.finishReceipt()
+        this.props.closeReceiptBank()
     }
 
     render(){
@@ -148,10 +174,13 @@ class OrderCompletion extends Component {
                 <TouchableOpacity style={style.button} onPress={()=>this.topup()}>
                     <Text style={style.buttonText}>Topup</Text>
                 </TouchableOpacity>
+
                 <ModalReceiptOrder 
-                    modalShow={this.state.transactionDone}
-                    modalContent={this.state.message}
                     closeShow={()=>this.closeReceipt()}
+                />
+
+                <ModalBank 
+                    closeShow={()=>this.closeReceiptBank()}
                 />
             </View>
         )
@@ -171,6 +200,27 @@ const mapDispatchToProps = dispatch => ({
         type:'ORDER_DONE',
         receipt: receipt,
         message: message
+    }),
+    setReceiptWallet: (phone, metode, tagihan, status) => dispatch({
+        type: 'RECEIVE_RECEIPT_WALLET',
+        phone: phone,
+        metode: metode,
+        tagihan: tagihan,
+        status: status,
+    }),
+    setReceiptBank: (phone, metode, tagihan, status, transferCode) => dispatch({
+        type: 'RECEIVE_RECEIPT_BANK',
+        phone: phone,
+        metode: metode,
+        tagihan: tagihan,
+        status: status,
+        transferCode: transferCode,
+    }),
+    closeReceiptWallet: () => dispatch({
+        type: 'TRASH_RECEIPT_WALLET',
+    }),
+    closeReceiptBank: () => dispatch({
+        type: 'TRASH_RECEIPT_BANK',
     }),
     finishReceipt: () => dispatch({
         type: 'RECEIPT_TRASH'

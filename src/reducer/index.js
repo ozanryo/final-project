@@ -6,6 +6,8 @@ import verifReducer from './verifReducer'
 import profileReducer from './profileReducer'
 import updateReducer from './updateReducer'
 import orderReducer from './orderReducer'
+import receiptBankReducer from './receiptBankReducer'
+import receiptWalletReducer from './receiptWalletReducer'
 
 const allReducers = combineReducers({
     login: loginReducer,
@@ -13,7 +15,9 @@ const allReducers = combineReducers({
     verification: verifReducer,
     update: updateReducer,
     profile: profileReducer,
-    order: orderReducer
+    order: orderReducer,
+    wallet: receiptWalletReducer,
+    bank: receiptBankReducer,
 })
 
 export default allReducers;

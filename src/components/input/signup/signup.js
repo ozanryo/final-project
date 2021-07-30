@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet,TouchableOpacity, ToastAndroid, ScrollView } from "react-native"
+import { View, Text, TextInput, StyleSheet,TouchableOpacity, ToastAndroid, ScrollView, ActivityIndicator } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
 import {connect} from 'react-redux'
 
@@ -22,6 +22,7 @@ class RegisterInput extends Component {
             isPassValid: true,
             validPassword: false,
             donePassword: false,
+            loadingCondition: false,
         }
     }
 
@@ -73,6 +74,7 @@ class RegisterInput extends Component {
     }
 
     updateAPI(dataToObj){
+        this.setState({loadingCondition: true})
         const option = {
             method: 'POST',
             mode: "cors",
@@ -91,7 +93,9 @@ class RegisterInput extends Component {
                 // this.props.updateProfile(json.userProfile)
                 if (json.success == true){
                     console.log("Response : ", json.message)
+                    this.setState({loadingCondition: false})
                     this.props.setVerif(json.verficode)
+                    
                 }
                 else{
                     console.log("Response : ", json.message)
@@ -398,7 +402,12 @@ class RegisterInput extends Component {
                     style={styles.button} 
                     onPress={() => this.createUser()}
                 >
-                    <Text style={styles.btnText}>Register</Text>
+                    {
+                        !this.state.loadingCondition ?
+                        <Text style={styles.btnText}>Register</Text>
+                        :
+                        <ActivityIndicator animating={true} size={35} color='white' />
+                    }
                 </TouchableOpacity>
             </ScrollView>
         )

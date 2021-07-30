@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ToastAndroid } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ToastAndroid, ActivityIndicator } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
+import {connect} from 'react-redux'
 
 class OrderComponent extends Component {
     constructor(props){
         super(props);
         this.state={
             phone: "",
+            loadingCondition: false,
         }
     }
 
@@ -14,13 +16,45 @@ class OrderComponent extends Component {
         if(this.state.phone == ""){
             ToastAndroid.show('Mohon Lengkapi Data', ToastAndroid.SHORT)
         }
-        else if(this.state.phone.slice(0,4) == '0821' || this.state.phone.slice(0,4)=='0822'){
-            this.props.phoneFunction(this.state.phone)
+        else if(this.state.phone.slice(0,4) == '0821'){
+            // this.props.phoneFunction(this.state.phone)
+            this.fetchProvider('telkomsel')
+            
+        } 
+        else if (this.state.phone.slice(0,4)=='0822'){
+            // this.props.phoneFunction(this.state.phone)
+            this.fetchProvider('indosat')
         }
         else{
             
             ToastAndroid.show('Provider Tidak Tersedia', ToastAndroid.SHORT)
         }
+    }
+
+    fetchProvider(providerName){
+        const option = {
+            method: 'GET',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+        }
+
+        return fetch("http://192.168.100.5:8888/oneline/product/" + providerName, option)
+            .then(response => response.json())
+            .then( async json => {
+                console.log("Order Product Response : ", json);
+                this.props.getOrder(this.state.phone, json);
+                this.props.phoneFunction(this.state.phone);
+                this.setState({phone: ""})
+                this.props.navigation.navigate('Order');
+                
+                
+
+            })
+            .catch(err => console.log('Error'))
     }
     render(){
         return(
@@ -39,12 +73,28 @@ class OrderComponent extends Component {
                     />
                 </View>
                 <TouchableOpacity onPress={()=>this.sendPhone()} style={layouting.button}>
-                    <Text style={layouting.buttonText}>Next Step</Text>
+                    {
+                        !this.state.loadingCondition ?
+                        <Text style={layouting.buttonText}>Next Step</Text>
+                        :
+                        <ActivityIndicator animating={true} size={25} />
+                    }
+                    
                 </TouchableOpacity>
             </View>
         )
     }
 }
+
+const mapDispatchToProps = dispatch => ({
+    getOrder: (phone, product)=>dispatch({
+        type:'GET_ORDER',
+        phone: phone, 
+        product: product,
+    })
+})
+
+export default connect(null, mapDispatchToProps) (OrderComponent)
 
 const layouting = StyleSheet.create({
     paymentLayout:{
@@ -83,5 +133,3 @@ const layouting = StyleSheet.create({
         fontSize: 20
     },    
 })
-
-export default OrderComponent

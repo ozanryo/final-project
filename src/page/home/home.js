@@ -19,38 +19,15 @@ class Home extends Component {
 
     getPhone=(input)=>{
         this.setState({phone: input, nextStep: true})
-        
-        if(this.state.phone.slice(0, 4) == '0821'){
-            this.fetchProvider('telkomsel')
-        } else if (this.state.phone.slice(0,4) == '0822'){
-            this.fetchProvider('indosat')
-        } else {
-            ToastAndroid.show('Provider Tidak Tersedia', ToastAndroid.SHORT)
-        }
-    }
-
-    fetchProvider(providerName){
-        const option = {
-            method: 'GET',
-            mode: "cors",
-            headers:{ 
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin" : "*", 
-                "Access-Control-Allow-Credentials" : true 
-            },
-        }
-
-        return fetch("http://192.168.100.5:8888/oneline/product/" + providerName, option)
-            .then(response => response.json())
-            .then( async json => {
-                console.log("Order Product Response : ", json);
-                this.props.getOrder(this.state.phone, json);
-                this.props.navigation.navigate('Order');
-
-                this.setState({phone: ''})
-
-            })
-            .catch(err => console.log('Error'))
+        this.props.navigation.navigate('Order');
+        // if(this.state.phone.slice(0, 4) == '0821'){
+        //     this.fetchProvider('telkomsel')
+        // } else if (this.state.phone.slice(0,4) == '0822'){
+        //     this.fetchProvider('indosat')
+        // } 
+        // else {
+        //     ToastAndroid.show('Provider Tidak Tersedia', ToastAndroid.SHORT)
+        // }
     }
 
     cancelStep(){
@@ -71,11 +48,6 @@ class Home extends Component {
             <View style={styles.main}>
                 <PaymentComponent getWallet={this.props.getWallet}/>
                 <OrderComponent phoneFunction={this.getPhone}/>
-                {/* <ModalReceiptOrder 
-                    modalShow={this.props.orderStat}
-                    closeShow={()=>this.closeReceipt()}
-                    modalContent={this.props.receiptTransaction}
-                /> */}
             </View>
         )
     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, ToastAndroid } from "react-native"
+import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, ToastAndroid, ActivityIndicator } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
 import {connect} from "react-redux"
 
@@ -10,6 +10,7 @@ class LoginInput extends Component {
             username: "Ozan997",
             password: "Ozan997?",
             dataSecureEntry: true,
+            loadingCondition: false,
         }
     }
 
@@ -29,12 +30,13 @@ class LoginInput extends Component {
 
         // console.log('Login User : ', userLogin)
         this.loginAPI(userLogin);
-        ToastAndroid.show('Berhasil Login ', ToastAndroid.SHORT)
+        
         
         // this.props.navigation.navigate('HomeNav');
     }
 
     loginAPI(dataToObj){
+        this.setState({loadingCondition: true})
         const option = {
             method: 'POST',
             mode: "cors",
@@ -55,7 +57,8 @@ class LoginInput extends Component {
                 this.props.setReceipt(json.orderData)
 
                 this.props.login()
-
+                this.setState({loadingCondition: false})
+                ToastAndroid.show('Berhasil Login ', ToastAndroid.SHORT)
                 console.log("Response : ", json.message)
             })
             .catch(err => console.log('Error'))
@@ -116,7 +119,12 @@ class LoginInput extends Component {
                     style={styles.button} 
                     onPress={() => this.login()}
                 >
-                    <Text style={styles.btnText}>Login</Text>
+                    {
+                        !this.state.loadingCondition?
+                        <Text style={styles.btnText}>Login</Text>
+                        :
+                        <ActivityIndicator animating={true} size={35} color='white'/>
+                    }
                 </TouchableOpacity>
             </View>
         )

@@ -58,6 +58,7 @@ class Receipt extends Component {
                 </View>
                 <ReceiptTable 
                     data={this.props.getReceipt} 
+                    sendUsername={this.props.getUsername}
                     clickDetails={this.detailReceipt}
                 />
                 <ModalReceipt 
@@ -72,6 +73,7 @@ class Receipt extends Component {
 
 const mapStateToProps = state => ({
     getReceipt: state.receipt.receipt,
+    getUsername: state.profile.profile.username,
 })
 
 export default connect(mapStateToProps)(Receipt);
