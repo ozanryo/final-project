@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet,TouchableOpacity, ToastAndroid, ScrollView } from "react-native"
+import { View, Text, TextInput, StyleSheet,TouchableOpacity, ToastAndroid, ScrollView, ActivityIndicator } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
 import {connect} from 'react-redux'
 
@@ -22,6 +22,7 @@ class UpdateInput extends Component {
             isPassValid: true,
             validPassword: false,
             donePassword: false,
+            loadingCondition: false,
         }
     }
 
@@ -84,6 +85,7 @@ class UpdateInput extends Component {
     }
 
     updateAPI(dataToObj){
+        this.setState({loadingCondition: true})
         const option = {
             method: 'PUT',
             mode: "cors",
@@ -107,7 +109,9 @@ class UpdateInput extends Component {
 
                 this.props.sendBack();
 
-                ToastAndroid.show('Mengirim Data User Baru ', ToastAndroid.SHORT)
+                this.setState({loadingCondition: false})
+
+                ToastAndroid.show('Update Profile Selesai ', ToastAndroid.SHORT)
             })
             .catch(err => console.log('Error'))
     }
@@ -347,7 +351,13 @@ class UpdateInput extends Component {
                     style={styles.button} 
                     onPress={() => this.updateProfile()}
                 >
-                    <Text style={styles.btnText}>Update Profile</Text>
+                    {
+                        !this.state.loadingCondition ?
+                        <Text style={styles.btnText}>Update Profile</Text>
+                        :
+                        <ActivityIndicator animating={true} size={35} color='white' />
+                    }
+                    
                 </TouchableOpacity>
             </ScrollView>
         )

@@ -16,7 +16,6 @@ class App extends Component {
       <Provider store={createStore(allReducers)}>
         <View style={{flex: 1}}>
           <Navigator />
-          {/* <OrderCompletion /> */}
         </View>
       </Provider>
     )

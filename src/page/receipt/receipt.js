@@ -1,43 +1,52 @@
 import React, { Component } from 'react'
-import {View, Text, StyleSheet, FlatList, ScrollView} from 'react-native'
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native'
 import { ModalReceipt } from '../../components/modal';
 import ReceiptTable from '../../components/table/receipt';
 import {connect} from "react-redux"
+import Icon from 'react-native-vector-icons/EvilIcons'
 
 class Receipt extends Component {
     constructor(props){
         super(props);
         this.state={
-            sampleData:[{
-                    code:0,
-                    tagihan: 20000,
-                    provider: 'telkomsel',
-                    phone: '0812312312'
-                },{
-                    code:1,
-                    tagihan: 20000,
-                    provider: 'indosat',
-                    phone: '0812289247'
-                },{
-                    code:2,
-                    tagihan: 15000,
-                    provider: 'indosat',
-                    phone: '0812289247'
-                },{
-                    code:3,
-                    tagihan: 35000,
-                    provider: 'telkomsel',
-                    phone: '0812289247'
-                },{
-                    code:4,
-                    tagihan: 50000,
-                    provider: 'indosat',
-                    phone: '0812289247'
-                },
-            ],
             selected:[],
             detailsInfo: false,
+            data:[]
         }
+    }
+
+    componentDidMount(){
+        this.getReceiptData(this.props.getUsername)
+    }
+
+    getReceiptData(input){
+        const user = {
+            username: input
+        }
+        const option = {
+            method: 'POST',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+            body:JSON.stringify(user)
+        }
+
+        return fetch("http://192.168.100.5:8888/oneline/receipt/all/", option)
+            .then(response => response.json())
+            .then( async json => {
+                console.log("Receipt Log Response : ", json);
+
+                this.setState({data: json.orderData})
+
+            })
+            .catch(err => console.log('Error'))
+    }
+
+    refreshReceipt(){
+        this.getReceiptData(this.props.getUsername)
     }
 
     detailReceipt=(inputData)=>{
@@ -49,15 +58,22 @@ class Receipt extends Component {
         this.setState({detailsInfo: false})
     }
 
+    
+
     render(){
         console.log(this.state.selected)
         return(
             <View style={styles.main}>
                 <View style={styles.titleLayout}>
-                    <Text style={styles.title}>Your Current Receipt</Text>
+                    <Text style={styles.title}>Your Receipt</Text>
+                    <TouchableOpacity 
+                        onPress={()=>this.refreshReceipt()}
+                    >
+                        <Icon name='refresh' size={70} />
+                    </TouchableOpacity>
                 </View>
                 <ReceiptTable 
-                    data={this.props.getReceipt} 
+                    data={this.state.data} 
                     sendUsername={this.props.getUsername}
                     clickDetails={this.detailReceipt}
                 />
@@ -87,13 +103,16 @@ const styles = StyleSheet.create({
     },
     titleLayout:{
         height: 120,
+        width:350,
         alignItems: 'center',
-        justifyContent: 'center',
-        borderBottomWidth: 0.7
+        justifyContent: 'flex-start',
+        borderBottomWidth: 0.7,
+        flexDirection: 'row'
     },
     title:{
         fontSize: 35,
         textAlign: 'center',
+        marginRight: 65,
     }
 })
 

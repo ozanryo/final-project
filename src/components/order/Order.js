@@ -32,6 +32,7 @@ class OrderComponent extends Component {
     }
 
     fetchProvider(providerName){
+        this.setState({loadingCondition: true})
         const option = {
             method: 'GET',
             mode: "cors",
@@ -49,10 +50,9 @@ class OrderComponent extends Component {
                 this.props.getOrder(this.state.phone, json);
                 this.props.phoneFunction(this.state.phone);
                 this.setState({phone: ""})
+                this.setState({loadingCondition: false})
                 this.props.navigation.navigate('Order');
                 
-                
-
             })
             .catch(err => console.log('Error'))
     }
@@ -77,7 +77,7 @@ class OrderComponent extends Component {
                         !this.state.loadingCondition ?
                         <Text style={layouting.buttonText}>Next Step</Text>
                         :
-                        <ActivityIndicator animating={true} size={25} />
+                        <ActivityIndicator animating={true} size={25} color='white' />
                     }
                     
                 </TouchableOpacity>

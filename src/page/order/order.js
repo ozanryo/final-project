@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ToastAndroid, ScrollView } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ToastAndroid, ScrollView, ActivityIndicator } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
 import {Picker} from '@react-native-picker/picker'
 import {connect} from 'react-redux'
@@ -18,6 +18,7 @@ class OrderCompletion extends Component {
             receipt: [],
             transactionDone: false,
             message: '',
+            loadingCondition: false,
         }
     }
 
@@ -53,6 +54,7 @@ class OrderCompletion extends Component {
     // }
 
     topupAPI(dataToObj){
+        this.setState({loadingCondition: true})
         const option = {
             method: 'POST',
             mode: "cors",
@@ -82,6 +84,7 @@ class OrderCompletion extends Component {
     }
 
     topupAPIBank(dataToObj){
+        this.setState({loadingCondition: true})
         const option = {
             method: 'POST',
             mode: "cors",
@@ -113,12 +116,14 @@ class OrderCompletion extends Component {
         this.props.navigation.navigate('Home')
         this.props.finishReceipt()
         this.props.closeReceiptWallet()
+        this.setState({loadingCondition: false})
     }
 
     closeReceiptBank=()=>{
         this.props.navigation.navigate('Home')
         this.props.finishReceipt()
         this.props.closeReceiptBank()
+        this.setState({loadingCondition: false})
     }
 
     render(){
@@ -172,7 +177,13 @@ class OrderCompletion extends Component {
                 </View>
                 
                 <TouchableOpacity style={style.button} onPress={()=>this.topup()}>
-                    <Text style={style.buttonText}>Topup</Text>
+                    {
+                        this.state.loadingCondition ?
+                        <ActivityIndicator animating={true} size={35} color='white' />
+                        :
+                        <Text style={style.buttonText}>Topup</Text>
+                    }
+                    
                 </TouchableOpacity>
 
                 <ModalReceiptOrder 
