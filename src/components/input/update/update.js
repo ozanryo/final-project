@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, StyleSheet,TouchableOpacity, ToastAndroid, ScrollView } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
+import {connect} from 'react-redux'
 
 class UpdateInput extends Component {
     constructor(props){
@@ -39,6 +40,18 @@ class UpdateInput extends Component {
             this.setState({dataSecureRePassEntry: false})
         }
     }
+
+    componentDidMount(){
+        this.setState({
+            firstname: this.props.getUser.firstname,
+            lastname: this.props.getUser.lastname,
+            phone: this.props.getUser.phone,
+            address: this.props.getUser.address,
+            email: this.props.getUser.email,
+            password: this.props.getUser.password,
+            repassword: this.props.getUser.password,
+        })
+    }
     
     updateProfile=()=>{
         if(
@@ -56,20 +69,47 @@ class UpdateInput extends Component {
                     phone: this.state.phone,
                     address: this.state.address,
                     email: this.state.email,
-                    username: 'Ozan997',
+                    username: this.props.getUser.username,
                     password: this.state.password,
                 }
         
                 console.log('New Profile : ', newProfile)
 
-                this.props.sendBack();
-
-                ToastAndroid.show('Mengirim Data User Baru ', ToastAndroid.SHORT)
+                this.updateAPI(newProfile)
                 
             }else{
                 ToastAndroid.show('Pastikan Password yang diinput samas ', ToastAndroid.SHORT)
             }
         }        
+    }
+
+    updateAPI(dataToObj){
+        const option = {
+            method: 'PUT',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+            body: JSON.stringify(dataToObj)
+        }
+
+        return fetch("http://192.168.100.5:8888/oneline/user/update/profile", option)
+            .then(response => response.json())
+            .then(async json => {
+                console.log("Update Profile Response : ", json);
+                this.props.updateProfile(json.userProfile)
+                
+                this.props.editProfileDone();
+
+                console.log("Response : ", json.message)
+
+                this.props.sendBack();
+
+                ToastAndroid.show('Mengirim Data User Baru ', ToastAndroid.SHORT)
+            })
+            .catch(err => console.log('Error'))
     }
 
     validatePassword(input){
@@ -314,6 +354,18 @@ class UpdateInput extends Component {
     }
 }
 
+const mapDispatchToProps = dispatch => ({
+    updateProfile: (newProfile)=> dispatch({
+        type: 'GET_PROFILE',
+        profile: newProfile,
+    }),
+    editProfileDone: ()=>dispatch({
+        type: 'UPDATE_DONE'
+    })
+})
+
+export default connect(null, mapDispatchToProps)(UpdateInput);
+
 const styles = StyleSheet.create({
     container: {
         flex: 1, 
@@ -366,4 +418,3 @@ const styles = StyleSheet.create({
     }
 })
 
-export default UpdateInput;

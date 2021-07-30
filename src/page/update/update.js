@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 import {UpdateInput} from '../../components/input'
 import {ModalUpdate} from '../../components/modal'
+import {connect} from 'react-redux'
 
 class Update extends Component {
     constructor(props){
@@ -42,6 +43,7 @@ class Update extends Component {
                 <UpdateInput 
                     infoPassword={this.infoPassword}
                     sendBack={this.goBack}
+                    getUser={this.props.getUpdateUser}
                 />
                 <ModalUpdate 
                     modalShow={this.state.modalPassword}
@@ -52,6 +54,12 @@ class Update extends Component {
         )
     }
 }
+
+const mapStateToProps = state => ({
+    getUpdateUser: state.update.update
+})
+
+export default connect(mapStateToProps)(Update);
 
 const styles = StyleSheet.create({
     main:{
@@ -73,4 +81,3 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Update;

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {View, Text, StyleSheet, FlatList, ScrollView} from 'react-native'
 import { ModalReceipt } from '../../components/modal';
 import ReceiptTable from '../../components/table/receipt';
+import {connect} from "react-redux"
 
 class Receipt extends Component {
     constructor(props){
@@ -56,7 +57,7 @@ class Receipt extends Component {
                     <Text style={styles.title}>Your Current Receipt</Text>
                 </View>
                 <ReceiptTable 
-                    data={this.state.sampleData} 
+                    data={this.props.getReceipt} 
                     clickDetails={this.detailReceipt}
                 />
                 <ModalReceipt 
@@ -68,6 +69,12 @@ class Receipt extends Component {
         )
     }
 }
+
+const mapStateToProps = state => ({
+    getReceipt: state.receipt.receipt,
+})
+
+export default connect(mapStateToProps)(Receipt);
 
 const styles = StyleSheet.create({
     main:{
@@ -88,4 +95,3 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Receipt;

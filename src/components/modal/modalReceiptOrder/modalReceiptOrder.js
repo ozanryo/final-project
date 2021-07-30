@@ -5,12 +5,43 @@ import { View, Text,
 } from "react-native"
 
 import Icon from 'react-native-vector-icons/Ionicons'
+import {connect} from 'react-redux'
 
-class ModalReceipt extends Component {
+class ModalReceiptOrder extends Component {
     constructor(props){
         super(props);
-        this.state={}
+        this.state={
+            phone: '',
+            provider: '',
+            tagihan: '',
+            status: false,
+            metode: ''
+        }
     }
+
+    componentDidMount(){
+        if(this.props.getReceiptStat != false){
+            if(this.props.modalContent.metode == 'wallet'){
+                this.setState({
+                    phone: this.props.getReceiptOrder.phone,
+                    provider:this.props.getReceiptOrder.provider,
+                    tagihan:this.props.getReceiptOrder.tagihan,
+                    status:this.props.getReceiptOrder.status,
+                    metode:this.props.getReceiptOrder.metode,
+                })
+            } else {
+                this.setState({
+                    phone: this.props.getReceiptOrder.phone,
+                    provider:this.props.getReceiptOrder.provider,
+                    tagihan:this.props.getReceiptOrder.tagihan,
+                    status:this.props.getReceiptOrder.status,
+                    metode:this.props.getReceiptOrder.metode,
+                })
+            }
+            
+        }
+    }
+
     render(){
         console.log('Get Receipt : ', this.props.modalContent)
         return(
@@ -27,21 +58,7 @@ class ModalReceipt extends Component {
                             </TouchableOpacity>
                         </View>
                         <View style={{marginHorizontal: 10, marginTop:40, marginBottom: 20}}>
-                            <Text style={styles.modalContent}>
-                                Phone : {this.props.modalContent.phone}
-                            </Text>
-                            <Text style={styles.modalContent}>
-                                Provider : {this.props.modalContent.provider}
-                            </Text>
-                            <Text style={styles.modalContent}>
-                                Tagihan : {this.props.modalContent.tagihan}
-                            </Text>
-                            <Text style={styles.modalContent}>
-                                Metode : {this.props.modalContent.metode}
-                            </Text>
-                            <Text style={styles.modalContent}>
-                                Status : {this.props.modalContent.status ? 'Sudah Bayar' : 'Belum Bayar'}
-                            </Text>
+                            <Text>{this.props.getMessage}</Text>
                         </View>
                         
                     </View>
@@ -51,7 +68,19 @@ class ModalReceipt extends Component {
     }
 }
 
-export default ModalReceipt;
+const mapStateToProps = state => ({
+    getReceiptOrder: state.order.receipt,
+    getMessage: state.order.message,
+    getReceiptStat: state.order.orderState,
+})
+
+const mapDispatchToProps = dispatch => ({
+    transactionDone: ()=>dispatch({
+        type:'RECEIPT_TRASH'
+    })
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ModalReceiptOrder);
 
 const styles = StyleSheet.create({
     modalLayout:{

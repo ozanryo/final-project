@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {View, } from 'react-native';
-import {Home} from './src/page/'
+import {OrderCompletion} from './src/page/'
 import Navigator from './src/components/navigation';
 import {Provider} from 'react-redux'
 import {createStore} from 'redux'
@@ -16,6 +16,7 @@ class App extends Component {
       <Provider store={createStore(allReducers)}>
         <View style={{flex: 1}}>
           <Navigator />
+          {/* <OrderCompletion /> */}
         </View>
       </Provider>
     )

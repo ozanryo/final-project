@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import {Home, Receipt, Profile} from '../../page'
+import {Home, Receipt,} from '../../page'
 import { View, Text, StyleSheet } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons"
 import ProfileNavigation from './profileNavigation';
+import OrderNav from './orderNavigation';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,7 +26,7 @@ export default class HomeNav extends Component {
                 }}
             >
                 <Tab.Screen 
-                    name='Home' component={Home} 
+                    name='Home' component={OrderNav} 
                     options={{
                         tabBarIcon: ({focused}) => (
                             <View style={style.tabs} >

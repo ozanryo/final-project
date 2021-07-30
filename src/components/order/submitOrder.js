@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ToastAndroid, } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
 import {Picker} from '@react-native-picker/picker'
+import {connect} from 'react-redux'
 
 class SubmitOrderComponent extends Component {
     constructor(props){
@@ -29,19 +30,29 @@ class SubmitOrderComponent extends Component {
                 },
             ],
             selectedProvider: [],
+            telkomsel:[],
+            indosat:[],
             product:"",
             method: "",
         }
     }
     componentDidMount(){
+        this.fetchProviderTelkomsel()
+        this.fetchProviderIndosat()
         this.getProvider();
     }
 
-    getProvider(){
+    
+
+    async getProvider(){
         if(this.props.getPhoneNumber.slice(0, 4) == '0822'){
-            this.setState({selectedProvider: this.state.sampleProvider1})
+            // this.setState({selectedProvider: this.state.sampleProvider1})
+            // this.fetchProvider("indosat")
+            this.setState({selectedProvider: this.state.indosat})
         } else if(this.props.getPhoneNumber.slice(0, 4) == '0821'){
-            this.setState({selectedProvider: this.state.sampleProvider2})
+            // this.setState({selectedProvider: this.state.sampleProvider2})
+            // this.fetchProvider("telkomsel")
+            this.setState({selectedProvider: this.state.telkomsel})
         }else{
             ToastAndroid.show('Provider Tidak Bersedia', ToastAndroid.SHORT)
         }
@@ -59,14 +70,126 @@ class SubmitOrderComponent extends Component {
 
     handleSubmit(){
         const newOrder = {
-            username: 'Ozan',
+            username: this.props.getProfileUsername,
             phone: this.props.getPhoneNumber,
             produk: this.state.product,
             metode: this.state.method,
         }
-
-        this.props.finishOrder()
+        
         console.log('Pesanan Baru : ', newOrder)
+        this.topupAPI(newOrder);
+        
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        console.log("Previous Props : ",prevProps)
+        console.log("Previous State : ",prevState.selectedProvider)
+        console.log('Current Selected : ', this.state.selectedProvider)
+        if(this.state.selectedProvider == prevState.selectedProvider){
+            this.getProvider()
+        }
+    }
+    
+
+    async fetchProviderTelkomsel(){
+        const option = {
+            method: 'GET',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+        }
+
+        return fetch("http://192.168.100.5:8888/oneline/product/telkomsel", option)
+            .then(response => response.json())
+            .then( async json => {
+                console.log("Order Product Response : ", json);
+                this.setState({telkomsel: json})
+                // this.setState({selectedProvider: this.state.telkomsel})
+                // console.log('Produk Terpilih : ', this.state.selectedProvider)
+            })
+            .catch(err => console.log('Error'))
+    }
+
+    async fetchProviderIndosat(){
+        const option = {
+            method: 'GET',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+        }
+
+        return fetch("http://192.168.100.5:8888/oneline/product/indosat", option)
+            .then(response => response.json())
+            .then( async json => {
+                console.log("Order Product Response : ", json);
+                this.setState({telkomsel: json})
+                // this.setState({selectedProvider: this.state.indosat})
+                // console.log('Produk Terpilih : ', this.state.selectedProvider)
+            })
+            .catch(err => console.log('Error'))
+    }
+
+    fetchProvider(providerName){
+        const option = {
+            method: 'GET',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+        }
+
+        return fetch("http://192.168.100.5:8888/oneline/product/" + providerName, option)
+            .then(response => response.json())
+            .then( async json => {
+                console.log("Order Product Response : ", json);
+                this.setState({selectedProvider: json})
+                // console.log('Produk Terpilih : ', this.state.selectedProvider)
+            })
+            .catch(err => console.log('Error'))
+    }
+
+    topupAPI(dataToObj){
+        const option = {
+            method: 'POST',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+            body: JSON.stringify(dataToObj)
+        }
+
+        return fetch("http://192.168.100.5:8888/oneline/topup", option)
+            .then(response => response.json())
+            .then(async json => {
+                console.log("Login Response : ", json);
+                if(json.succes){
+                    console.log('Message : ', json.message)
+                    
+                    if(json.metode == 'wallet'){
+                        this.props.setReceiptOrder(json.receipt)
+                        this.props.getAllReceipt(json.allReceipt)
+                        
+                    }else{
+                        this.props.setReceiptOrder(json.receiptBank)
+                        this.props.getAllReceipt(json.allReceipt)
+                    }
+                }else{
+                    console.log('Message : ', json.message)
+                }
+
+                console.log("Response : ", json.message)
+            })
+            .catch(err => console.log('Error'))
     }
 
     render(){
@@ -90,11 +213,11 @@ class SubmitOrderComponent extends Component {
                     >
                         <Picker.Item label='Pilih Pulsa' value='' />
                         {
-                            this.state.selectedProvider.length == 0 ?
-                            <Picker.Item label='' value='' />
-                            :
+                            // this.state.selectedProvider.length == 0 ?
+                            // <Picker.Item label='' value='' />
+                            // :
                             this.state.selectedProvider.map((items, index)=>
-                                <Picker.Item key={index} label={items.pulsa} value={items.produk} />
+                                <Picker.Item key={index} label={items.pulsa} value={items.code} />
                             )            
                         }
                     </Picker>
@@ -120,6 +243,23 @@ class SubmitOrderComponent extends Component {
         )
     }
 }
+
+const mapStateToProps = state => ({
+    getProfileUsername: state.profile.profile.username,
+})
+
+const mapDispatchToProps = dispatch => ({
+    setReceiptOrder: (receipt)=>dispatch({
+        type:'ORDER_DONE',
+        receipt: receipt,
+    }),
+    getAllReceipt: (allReceipt) => dispatch({
+        type:'RECEIPT_GET',
+        receipt: allReceipt,
+    })
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SubmitOrderComponent)
 
 const layouting = StyleSheet.create({
     paymentLayout:{
@@ -187,4 +327,3 @@ const layouting = StyleSheet.create({
     },
 })
 
-export default SubmitOrderComponent

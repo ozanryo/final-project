@@ -1,8 +1,19 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet,TouchableOpacity, Modal } from "react-native"
 import Icon from 'react-native-vector-icons/Ionicons'
+import {connect} from 'react-redux'
 
 class ModalDetails extends Component {
+    constructor(props){
+        super(props);
+        this.state={}
+    }
+
+    gotoUpdate(){
+        this.props.gotoUpdate();
+        this.props.sendUpdate(this.props.modalContent)
+    }
+
     render(){
         return(
             <Modal
@@ -25,7 +36,7 @@ class ModalDetails extends Component {
                             <Text style={{fontSize: 22,}}>Email : {this.props.modalContent.email} </Text>
                             <Text style={{fontSize: 22,}}>Username : {this.props.modalContent.username} </Text>
                         </View>
-                        <TouchableOpacity style={style.button} onPress={()=>this.props.gotoUpdate()}>
+                        <TouchableOpacity style={style.button} onPress={()=>this.gotoUpdate()}>
                             <Text style={style.btnText}>Edit Profile ?</Text>
                         </TouchableOpacity>
                     </View>
@@ -34,6 +45,15 @@ class ModalDetails extends Component {
         )
     }
 }
+
+const mapDispatchToProps = dispatch => ({
+    sendUpdate: (edit)=> dispatch({
+        type: 'UPDATE_START',
+        update: edit,
+    })
+})
+
+export default connect(null, mapDispatchToProps)(ModalDetails);
 
 const style = StyleSheet.create({
     modalLayout:{
@@ -101,4 +121,3 @@ const style = StyleSheet.create({
     },
 })
 
-export default ModalDetails;

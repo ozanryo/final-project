@@ -62,14 +62,42 @@ class RegisterInput extends Component {
                 }
         
                 console.log('New User : ', newUser)
+                this.updateAPI(newUser)
         
                 ToastAndroid.show('Mengirim Data User Baru ', ToastAndroid.SHORT)
-                // this.props.sendBack();
-                this.props.setVerif('3212')
+                
             }else{
                 ToastAndroid.show('Pastikan Password yang diinput samas ', ToastAndroid.SHORT)
             }
         }        
+    }
+
+    updateAPI(dataToObj){
+        const option = {
+            method: 'POST',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+            body: JSON.stringify(dataToObj)
+        }
+
+        return fetch("http://192.168.100.5:8888/oneline/registration", option)
+            .then(response => response.json())
+            .then(async json => {
+                console.log("User Registration Response : ", json);
+                // this.props.updateProfile(json.userProfile)
+                if (json.success == true){
+                    console.log("Response : ", json.message)
+                    this.props.setVerif(json.verficode)
+                }
+                else{
+                    console.log("Response : ", json.message)
+                }
+            })
+            .catch(err => console.log('Error'))
     }
 
     validateUsername(input){

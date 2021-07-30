@@ -12,8 +12,40 @@ class ModalVerification extends Component {
     }
     sendVerifToAPI(){
         console.log('Verif Get : ', this.state.verifCode)
-        this.props.setVerifStat()
-        this.props.goBack();
+        const verification = {
+            verifcode: this.state.verifCode
+        }
+
+        this.verifAPI(verification)
+        
+    }
+
+    verifAPI(dataToObj){
+        const option = {
+            method: 'POST',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+            body: JSON.stringify(dataToObj)
+        }
+
+        return fetch("http://192.168.100.5:8888/oneline/verification", option)
+            .then(response => response.json())
+            .then(async json => {
+                console.log("User Registration Response : ", json);
+                if (json.success == true && json.verifStatus){
+                    console.log("Response : ", json.message)
+                    this.props.setVerifStat()
+                    this.props.goBack();
+                }
+                else{
+                    console.log("Response : ", json.message)
+                }
+            })
+            .catch(err => console.log('Error'))
     }
     render(){
         return(

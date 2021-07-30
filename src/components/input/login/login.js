@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, ToastAndroid } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
+import {connect} from "react-redux"
 
 class LoginInput extends Component {
     constructor(props){
@@ -26,12 +27,38 @@ class LoginInput extends Component {
             password: this.state.password,
         }
 
-        console.log('Login User : ', userLogin)
-
+        // console.log('Login User : ', userLogin)
+        this.loginAPI(userLogin);
         ToastAndroid.show('Berhasil Login ', ToastAndroid.SHORT)
-
-        this.props.login()
+        
         // this.props.navigation.navigate('HomeNav');
+    }
+
+    loginAPI(dataToObj){
+        const option = {
+            method: 'POST',
+            mode: "cors",
+            headers:{ 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*", 
+                "Access-Control-Allow-Credentials" : true 
+            },
+            body: JSON.stringify(dataToObj)
+        }
+
+        return fetch("http://192.168.100.5:8888/oneline/login", option)
+            .then(response => response.json())
+            .then(async json => {
+                console.log("Login Response : ", json);
+                this.props.setLoginStat(json.userProfile)
+                this.props.setProfile(json.userProfile)
+                this.props.setReceipt(json.orderData)
+
+                this.props.login()
+
+                console.log("Response : ", json.message)
+            })
+            .catch(err => console.log('Error'))
     }
 
     render(){
@@ -96,6 +123,27 @@ class LoginInput extends Component {
     }
 }
 
+const mapStateToProps = (state)=>({
+    getLoginStat: state.login.loginStat,
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    setLoginStat: (profile)=>dispatch({
+        type:'LOGIN',
+        profile: profile,
+    }),
+    setProfile: (user) => dispatch({
+        type:'GET_PROFILE',
+        profile: user,
+    }),
+    setReceipt: (receipt) => dispatch({
+        type:'RECEIPT_GET',
+        receipt: receipt,
+    })
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginInput);
+
 const styles = StyleSheet.create({
     container: {
         flex: 1, 
@@ -137,4 +185,3 @@ const styles = StyleSheet.create({
     },
 })
 
-export default LoginInput;

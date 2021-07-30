@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, FlatList, To
 import { Avatar } from 'react-native-elements'
 import Icon from "react-native-vector-icons/Ionicons"
 import {ModalDetails} from '../../components/modal'
+import {connect} from 'react-redux'
 
 class Profile extends Component {
     constructor(props){
@@ -44,11 +45,16 @@ class Profile extends Component {
                     caption: 'Logout',
                     size: 40,
                     color: 'white',
-                    click: ()=> Alert.alert('Logout')
+                    click: ()=> this.logoutProfile()
                 },
             ],
             detailsInfo: false,
         }
+    }
+
+    logoutProfile(){
+        this.props.navigation.navigate('LoginNav')
+        this.props.logoutUser()
     }
 
     closeProfile(){
@@ -60,6 +66,7 @@ class Profile extends Component {
         this.setState({detailsInfo: false})
     }
     render(){
+        console.log('Profile : ', this.props.getProfile)
         return(
             <View style={styling.main}>
                 {/* <ImageBackground 
@@ -77,7 +84,7 @@ class Profile extends Component {
                             />
                         </View>
                         <View style={styling.usernameLayout}>
-                            <Text style={styling.usernameCaption}>{this.state.user.username}</Text>
+                            <Text style={styling.usernameCaption}>{this.props.getProfileUsername}</Text>
                         </View>
                         <FlatList 
                             style={styling.menuLayout}
@@ -96,7 +103,7 @@ class Profile extends Component {
                     <ModalDetails 
                         modalShow={this.state.detailsInfo} 
                         closeShow={()=>this.closeProfile()} 
-                        modalContent={this.state.user}
+                        modalContent={this.props.getProfile}
                         gotoUpdate={this.gotoUpdate}
                     />
                 {/* </ImageBackground> */}
@@ -104,6 +111,19 @@ class Profile extends Component {
         )
     }
 }
+
+const mapStateToProps = state => ({
+    getProfile: state.profile.profile,
+    getProfileUsername: state.profile.profile.username,
+})
+
+const mapDispatchToProps = dispatch => ({
+    logoutUser: ()=>dispatch({
+        type: 'LOGOUT'
+    })
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
 
 const styling = StyleSheet.create({
     main:{
@@ -167,4 +187,3 @@ const styling = StyleSheet.create({
     }
 })
 
-export default Profile;

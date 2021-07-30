@@ -5,7 +5,7 @@ class ReceiptTable extends Component {
     constructor(props){
         super(props);
         this.state={
-            data:[{
+            sampleData:[{
                 code:0,
                 tagihan: 20000,
                 provider: 'telkomsel',
@@ -16,15 +16,23 @@ class ReceiptTable extends Component {
                 provider: 'indosat',
                 phone: '0812289247'
             },],
-            
+            data:[]
         }
+    }
+
+    componentDidMount(){
+        this.setState({
+            data: this.props.data
+        })
     }
 
     obtainData(data){
         const input = {
             tagihan: data.tagihan,
             provider: data.provider,
-            phone: data.phone
+            phone: data.phone,
+            metode: data.metode,
+            status: data.status,
         }
         this.props.clickDetails(input)
     }
@@ -33,7 +41,7 @@ class ReceiptTable extends Component {
         return(
             <FlatList 
                 style={styles.main}
-                data={this.props.data}
+                data={this.state.data}
                 renderItem={({item})=>
                     <TouchableOpacity 
                         style={styles.tableRow} 
