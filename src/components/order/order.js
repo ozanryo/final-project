@@ -262,7 +262,7 @@ const mapStateToProps=(state)=>({
 })
 
 const mapDispatchToProps=(dispatch)=>({
-    setReceipt: (dataReceipt)=>({
+    setReceipt: (dataReceipt)=> dispatch({
         type:'ORDER_TAKEN',
         order: dataReceipt,
     })

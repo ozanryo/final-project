@@ -68,6 +68,7 @@ class Login extends Component {
                     console.log("Login Response : ", json);
                     this.props.setLoginProfile(json.userProfile)
                     this.props.setOrder(json.orderData)
+                    this.props.setProfile(json.userProfile)
 
                     console.log("Response : ", json.message)
                 })
@@ -161,6 +162,10 @@ const mapStateToProps=(state)=>({
 const mapDispatchToProps=(dispatch)=>({
     setLoginProfile: (user) => dispatch({
         type: 'LOGIN_DONE',
+        profile: user,
+    }),
+    setProfile:(user)=> dispatch({
+        type: 'RECEIVE_PROFILE',
         profile: user,
     }),
     setOrder: (receipt) => dispatch({

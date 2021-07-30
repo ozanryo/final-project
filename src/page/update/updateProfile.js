@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import userPic from "../../assets/webicons/res/mipmap-xxxhdpi/user.png"
 import lockPic from "../../assets/webicons/res/mipmap-xxxhdpi/lock.png"
 import cityIcon from "../../assets/webicons/res/mipmap-xxxhdpi/city.png"
 import phoneIcon from "../../assets/webicons/res/mipmap-xxxhdpi/phone.png"
@@ -100,6 +99,7 @@ class UpdateProfile extends Component {
                     if(json.success === true){
                         console.log('New Profile : ', json.userProfile)
                         this.props.setEditProfile(json.userProfile)
+                        this.props.setProfile(json.userProfile)
                         console.log("Response : ", json.message)
                     } else {
                         console.log("Response : ", json.message)
@@ -298,6 +298,10 @@ const mapDispatchToProps=(dispatch)=>({
         type: 'EDIT_DONE',
         profile: newProfle,
 
+    }),
+    setProfile:(user)=> dispatch({
+        type: 'RECEIVE_PROFILE',
+        profile: user,
     }),
     cancelEdit: ()=>dispatch({
         type: 'EDIT_CANCEL'

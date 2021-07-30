@@ -3,7 +3,6 @@ import userPic from "../../assets/webicons/res/mipmap-xxxhdpi/user.png"
 import lockPic from "../../assets/webicons/res/mipmap-xxxhdpi/lock.png"
 import cityIcon from "../../assets/webicons/res/mipmap-xxxhdpi/city.png"
 import phoneIcon from "../../assets/webicons/res/mipmap-xxxhdpi/phone.png"
-import closeIcon from "../../assets/webicons/res/mipmap-xxxhdpi/close.png"
 import {Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
 

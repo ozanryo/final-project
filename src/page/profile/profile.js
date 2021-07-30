@@ -16,9 +16,17 @@ class Profile extends Component {
         this.props.setEditProfile(this.props.getProfile)
         this.setState({editedStatus: true})
     }
+
+    logout(){
+        this.props.logoutProfile();
+    }
+
     render(){
-        if(this.state.editedStatus == true){
+        if(this.state.editedStatus === true){
             return <Redirect to='/edit-profile' />
+        } 
+        else if(this.props.getLoginStat === false){
+            return <Redirect to='/' />
         }
         return(
             <div
@@ -78,7 +86,7 @@ class Profile extends Component {
                                     bg-red-700 hover:bg-red-500 text-white
                                 '
                                 style={{fontSize: 25, marginLeft: 25,}}
-                                onClick={()=>alert("Logout")}
+                                onClick={()=>this.logout()}
                             >
                                 Logout
                             </div>
@@ -91,16 +99,19 @@ class Profile extends Component {
 }
 
 const mapStateToProps=(state)=>({
-    getProfile: state.forLogin.profile,
+    getProfile: state.profile.profile,
     getEditStatus: state.edit.status,
+    getLoginStat: state.forLogin.status,
 })
 
 const mapDispatchToProps=(dispatch)=>({
     setEditProfile: (newProfle)=>dispatch({
         type: 'EDIT_BEGIN',
         profile: newProfle,
-
-    })
+    }),
+    logoutProfile: ()=> dispatch({
+        type:'LOGOUT'
+    }),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

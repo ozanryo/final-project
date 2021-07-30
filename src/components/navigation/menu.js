@@ -11,7 +11,7 @@ export const MenuBar = [
     }, 
     {
         title: 'Login',
-        url: '/login'
+        url: '/'
     }, {
         title: 'Sign-Up',
         url: '/signup'

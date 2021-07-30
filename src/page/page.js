@@ -9,7 +9,7 @@ class Page extends Component {
                 <Route path='/home' component={Home}/>
                 <Route path='/profile' component={Profile}/>
                 <Route path='/receipt' component={Receipt}/>
-                <Route exact path='/login' component={Login}/>
+                <Route exact path='/' component={Login}/>
                 <Route path='/signup' component={Signup}/>
                 <Route path='/edit-profile' component={UpdateProfile}/>
                 <Route path='/verify' component={Verification}/>
