@@ -28,7 +28,7 @@ class Home extends Component {
 }
 
 const mapStateToProps=(state)=>({
-    getWallet: state.forLogin.profile.wallet
+    getWallet: state.wallet.wallet
 })
 
 export default connect(mapStateToProps)(Home);

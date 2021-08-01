@@ -106,7 +106,7 @@ class Receipt extends Component {
                     flex items-center justify-center flex-col
                     bg-white rounded-3xl
                 '
-                style={{width:1350, height: 1050}}
+                style={{width:1350, height: 1150}}
                 >
                     <div className='flex items-start justify-center mt-8 mb-4'>
                         <h1 className='text-7xl text-black'>Your Current Receipt</h1>

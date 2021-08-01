@@ -101,6 +101,7 @@ class Order extends Component {
                         provider: [],
                         secondStep: false
                     })
+                    this.props.setWallet(json.user.wallet)
                     
                 })
                 .catch(err => console.log('Error'))
@@ -240,9 +241,9 @@ class Order extends Component {
                             />
                         </div>
                         <div className='
-                                bg-yellow-400 mt-8
+                                bg-yellow-600 mt-8
                                 flex items-center justify-center
-                                rounded-full text-2xl
+                                rounded-full text-2xl text-white
                                 hover:bg-yellow-300
                             '
                             style={{width: 200, height:60}}
@@ -265,6 +266,10 @@ const mapDispatchToProps=(dispatch)=>({
     setReceipt: (dataReceipt)=> dispatch({
         type:'ORDER_TAKEN',
         order: dataReceipt,
+    }),
+    setWallet: wallet => dispatch({
+        type: 'GET_WALLET',
+        wallet: wallet,
     })
 })
 

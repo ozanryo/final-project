@@ -15,6 +15,7 @@ class UpdateProfile extends Component {
             phone: "",
             city: "",
             username: "",
+            email: "",
             password: "",
             repassword: "",
             editedStatus: false
@@ -56,27 +57,38 @@ class UpdateProfile extends Component {
             lastname: this.props.getProfile.lastname,
             phone: this.props.getProfile.phone,
             city: this.props.getProfile.address,
+            email: this.props.getProfile.email,
             username: this.props.getProfile.username,
+            password: this.props.getProfile.password,
+            repassword: this.props.getProfile.password,
         })
     }
 
     submitUpdate(){
-        if(this.state.repassword === this.state.password){
-            const sendUpdate ={
-                firstname: this.state.firstname,
-                lastname: this.state.lastname,
-                phone: this.state.phone,
-                address: this.state.city,
-                email: this.props.getProfile.email,
-                username: this.props.getProfile.username,
-                password: this.state.password
+        if(
+            this.state.firstname === "" || this.state.lastname === "" ||
+            this.state.city === "" || this.state.phone === "" ||
+            this.state.password === "" || this.state.repassword === ""
+        ){
+            console.log("Mohon lengkapi form")
+        }else{
+            if(this.state.repassword === this.state.password){
+                const sendUpdate ={
+                    firstname: this.state.firstname,
+                    lastname: this.state.lastname,
+                    phone: this.state.phone,
+                    address: this.state.city,
+                    email: this.props.getProfile.email,
+                    username: this.props.getProfile.username,
+                    password: this.state.password
+                }
+    
+                console.log("New Profile : ", sendUpdate)
+                this.submitUpdateAPI(sendUpdate)
+                console.log('Update User Berhasil')
+            } else {
+                alert('Pastikan Password dan Re Password Sama')
             }
-
-            console.log("New Profile : ", sendUpdate)
-            this.submitUpdateAPI(sendUpdate)
-            console.log('Update User Berhasil')
-        } else {
-            alert('Pastikan Password dan Re Password Sama')
         }
     }
 

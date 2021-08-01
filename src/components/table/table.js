@@ -17,6 +17,12 @@ class TableList extends Component {
                     <td className='text-xl py-4'>
                         <div>phone : {item.phone}</div>
                         <div>provider : {item.provider}</div>
+                        {
+                            item.metode === "virtual account" ?
+                            <div>Kode Transfer : 8000{item.phone}</div>
+                            :
+                            <div></div>
+                        }
                     </td>
                     <td className='text-3xl py-4'>{item.tagihan}</td>
                     <td className='text-3xl py-4'>{item.metode}</td>
