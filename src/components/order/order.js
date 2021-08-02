@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Select from 'react-dropdown-select';
 import backIcon from "../../assets/orderticon/backward.png"
 import {connect} from 'react-redux'
+import ModalReceipt from '../modal/modalReceipt/ModalReceipt';
 
 class Order extends Component {
     constructor(props){
@@ -10,28 +11,11 @@ class Order extends Component {
             phone: "",
             methods: "",
             produk: 1,
-            sampleProvider1:[{
-                    code: 1,
-                    nominal: 5000,
-                    harga: 5750
-                },{
-                    code: 2,
-                    nominal: 10000,
-                    harga: 10750
-                }
-            ],
-            sampleProvider2:[{
-                    code: 1,
-                    nominal: 5000,
-                    harga: 5250
-                },{
-                    code: 2,
-                    nominal: 10000,
-                    harga: 11250
-                }
-            ],
             secondStep: false,
             provider: [],
+            loadingCondition: false,
+            loadingProduct:false,
+            modalCondition: true,
         }
 
         this.handlePhone = this.handlePhone.bind(this)
@@ -77,6 +61,7 @@ class Order extends Component {
     }
 
     submitOrder(dataToObj){
+        this.setState({loadingCondition: true})
         const option = {
             method: 'POST',
             mode: "cors",
@@ -91,17 +76,24 @@ class Order extends Component {
         fetch("http://localhost:8888/oneline/topup", option)
                 .then(response => response.json())
                 .then(async json => {
-                    console.log("Order Response : ", json);
-                    // console.log("Order Message : ", json.message)
-                    this.props.setReceipt(json.allReceipt);
-                    this.setState({
-                        phone: "",
-                        methods: "",
-                        produk: 1,
-                        provider: [],
-                        secondStep: false
-                    })
-                    this.props.setWallet(json.user.wallet)
+                    if(json.success){
+                        console.log("Order Response : ", json);
+                        // console.log("Order Message : ", json.message)
+                        this.props.setReceipt(json.allReceipt);
+                        this.setState({
+                            phone: "",
+                            methods: "",
+                            produk: 1,
+                            provider: [],
+                            secondStep: false
+                        })
+                        this.props.setWallet(json.user.wallet)
+                        this.setState({loadingCondition: false})
+                    } else {
+                        alert('message : ', json.message)
+                        this.setState({loadingCondition: false})
+                    }
+                    
                     
                 })
                 .catch(err => console.log('Error'))
@@ -124,6 +116,7 @@ class Order extends Component {
     }
 
     fetchProduct(product){
+        this.setState({loadingProduct: true})
         const option = {
             method: 'GET',
             mode: "cors",
@@ -140,11 +133,15 @@ class Order extends Component {
                     console.log("Order Response : ", json);
                     // console.log("Order Message : ", json.message)
                     const dataProvider = json;
-                    console.log("Data : ", dataProvider)
+                    console.log("Data Produk : ", dataProvider)
 
-                    this.setState({provider: dataProvider})
+                    this.setState({provider: dataProvider, loadingProduct: false})
                 })
                 .catch(err => console.log('Error'))
+    }
+
+    closeModal=()=>{
+        this.setState({modalCondition: false})
     }
 
     render(){
@@ -152,17 +149,17 @@ class Order extends Component {
             <div>
                 {  
                     this.state.secondStep ?
-                        <div className='
+                    <div className='
                             flex items-center justify-start
-                            rounded-3xl border-2 flex-col my-20
-                            py-12
-                        '
-                        style={{width: 900, height: 650, backgroundColor:'#CF681D'}}
+                                rounded-3xl border-2 flex-col my-20
+                                py-12
+                            '
+                            style={{width: 900, height: 650, backgroundColor:'#CF681D'}}
                         >
                             <div 
                                 className='flex items-center justify-start mb-15' 
                                 style={{width:'90%',}}
-                                onClick={()=>this.setState({secondStep: false})}
+                                onClick={()=>this.setState({secondStep: false, provider:[]})}
                             >
                                 <img alt='Back Icon' width='50' src={backIcon} />
                             </div>
@@ -177,20 +174,31 @@ class Order extends Component {
                                         Nominal 
                                     </div>
                                     <div className='rounded-full bg-white flex items-center justify-start ' 
-                                        style={{width:200, height: 45}}
+                                        style={{width:390, height: 45}}
                                     >
-                                        <select 
-                                            className='text-2xl text-black text-center focus:outline-none ml-10'
-                                            onChange={this.handleNominal}
-                                            style={{width:150}}
-                                            // value={this.state.provider}
-                                        >
-                                            {
-                                                this.state.provider.map((item, index)=>(
-                                                        <option key={index} className='text-black text-xl' value={item.code}>{item.pulsa}</option>
-                                                ))
-                                            }
-                                        </select>
+                                        {
+                                            this.state.loadingProduct ?
+                                                <div className='text-2xl text-black text-center focus:outline-none ml-10'
+                                                onChange={this.handleNominal}
+                                                style={{width:150}}>
+                                                    <div className='flex flex-row'>
+                                                        <svg className='animate-spin h-6 w-6 mr-10 bg-black' ></svg>
+                                                        Loading...
+                                                    </div>
+                                                </div>
+                                            :
+                                                <select 
+                                                    className='text-2xl text-black text-center focus:outline-none ml-10'
+                                                    onChange={this.handleNominal}
+                                                    style={{width:340}}
+                                                >
+                                                {
+                                                    this.state.provider.map((item, index)=>(
+                                                            <option key={index} className='text-black text-xl' value={item.code}>{item.pulsa}</option>
+                                                    ))
+                                                }
+                                                </select>
+                                        }
                                     </div>                                    
                                 </div>
                                 <div className='flex items-start justify-center flex-row my-10'>
@@ -249,10 +257,19 @@ class Order extends Component {
                             style={{width: 200, height:60}}
                             onClick={()=>this.searchProvider()}
                         >
-                            Input Phone
+                            {
+                            !this.state.loadingCondition ?
+                            <div>Input Phone</div>
+                            :
+                            <div className='flex flex-row'>
+                                <svg className='animate-spin h-10 w-10 mr-10 bg-white' ></svg>
+                                Loading...
+                            </div>
+                        }
                         </div>
                     </div>
                 }
+                
             </div>
         )
     }

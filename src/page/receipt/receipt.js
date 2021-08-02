@@ -76,7 +76,6 @@ class Receipt extends Component {
         const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
         
         this.setState({pageCount: Math.ceil(data.length / this.state.perPage), post: slice})
-
     }
 
     handlePageClick = (e) => {
@@ -89,7 +88,6 @@ class Receipt extends Component {
         }, () => {
             this.postData();
         });
-  
     };
 
     render(){
@@ -103,10 +101,10 @@ class Receipt extends Component {
                 style={{ height:'150vh', backgroundColor: '#A39D9C'}}
             >
                 <div className='
-                    flex items-center justify-center flex-col
-                    bg-white rounded-3xl
-                '
-                style={{width:1350, height: 1150}}
+                        flex items-center justify-center flex-col
+                        bg-white rounded-3xl
+                    '
+                    style={{width:1350, height: 1150}}
                 >
                     <div className='flex items-start justify-center mt-8 mb-4'>
                         <h1 className='text-7xl text-black'>Your Current Receipt</h1>
@@ -119,17 +117,17 @@ class Receipt extends Component {
                     </div>
 
                     <ReactPaginate
-                            previousLabel={"prev"}
-                            nextLabel={"next"}
-                            breakLabel={"..."}
-                            breakClassName={"break-me"}
-                            pageCount={this.state.pageCount}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={5}
-                            onPageChange={this.handlePageClick}
-                            containerClassName={"pagination"}
-                            subContainerClassName={"pages pagination"}
-                            activeClassName={"active"}
+                        previousLabel={"prev"}
+                        nextLabel={"next"}
+                        breakLabel={"..."}
+                        breakClassName={"break-me"}
+                        pageCount={this.state.pageCount}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={this.handlePageClick}
+                        containerClassName={"pagination"}
+                        subContainerClassName={"pages pagination"}
+                        activeClassName={"active"}
                     />
                 </div>
             </div>

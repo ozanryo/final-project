@@ -70,7 +70,7 @@ class UpdateProfile extends Component {
             this.state.city === "" || this.state.phone === "" ||
             this.state.password === "" || this.state.repassword === ""
         ){
-            console.log("Mohon lengkapi form")
+            alert("Mohon lengkapi form")
         }else{
             if(this.state.repassword === this.state.password){
                 const sendUpdate ={

@@ -5,6 +5,7 @@ import cityIcon from "../../assets/webicons/res/mipmap-xxxhdpi/city.png"
 import phoneIcon from "../../assets/webicons/res/mipmap-xxxhdpi/phone.png"
 import {Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
+import { Alert } from 'bootstrap'
 
 class Signup extends Component {
     constructor(props){
@@ -57,22 +58,31 @@ class Signup extends Component {
     }
 
     submitNewUser(){
-        if(this.state.repassword === this.state.password){
-            const newUser ={
-                firstname: this.state.firstname,
-                lastname: this.state.lastname,
-                phone: this.state.phone,
-                address: this.state.city,
-                email: this.state.email,
-                username: this.state.username,
-                password: this.state.password
+        if(
+            this.state.firstname === "" || this.state.lastname === "" ||
+            this.state.city === "" || this.state.phone === "" ||
+            this.state.email === "" || this.state.username === "" ||
+            this.state.password === "" || this.state.repassword === ""
+        ){
+            alert('Mohon Lengkapi Form')
+        }else {
+            if(this.state.repassword === this.state.password){
+                const newUser ={
+                    firstname: this.state.firstname,
+                    lastname: this.state.lastname,
+                    phone: this.state.phone,
+                    address: this.state.city,
+                    email: this.state.email,
+                    username: this.state.username,
+                    password: this.state.password
+                }
+    
+                console.log("New User : ", newUser)
+                this.submitNewUserAPI(newUser)
+                console.log('Update User Berhasil')
+            } else {
+                alert('Pastikan Password dan Re Password Sama')
             }
-
-            console.log("New User : ", newUser)
-            this.submitNewUserAPI(newUser)
-            console.log('Update User Berhasil')
-        } else {
-            alert('Pastikan Password dan Re Password Sama')
         }
     }
 
