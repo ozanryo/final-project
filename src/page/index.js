@@ -5,5 +5,6 @@ import Profile from "./profile/profile";
 import Receipt from "./receipt/receipt"
 import UpdateProfile from "./update/updateProfile";
 import Verification from "./verification/verification";
+import Transaction from "./transaction/transaction";
 
-export {Login, Signup, Home, Profile, Receipt, UpdateProfile, Verification};
+export {Login, Signup, Home, Profile, Receipt, UpdateProfile, Verification, Transaction};

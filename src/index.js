@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import {createStore} from 'redux'
 import {Provider} from 'react-redux'
 import CompileReducer from '../src/reducer'
+import {Transaction} from '../src/page'
 
 const store = createStore(
   CompileReducer, 

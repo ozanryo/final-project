@@ -3,6 +3,7 @@ import Select from 'react-dropdown-select';
 import backIcon from "../../assets/orderticon/backward.png"
 import {connect} from 'react-redux'
 import ModalReceipt from '../modal/modalReceipt/ModalReceipt';
+import { Redirect } from 'react-router-dom';
 
 class Order extends Component {
     constructor(props){
@@ -88,7 +89,13 @@ class Order extends Component {
                             secondStep: false
                         })
                         this.props.setWallet(json.user.wallet)
-                        this.setState({loadingCondition: false})
+                        if(json.metode === 'wallet'){
+                            this.props.setTransaction(json.receipt)
+                            this.setState({loadingCondition: false})
+                        }else{
+                            this.props.setTransaction(json.receiptBank)
+                            this.setState({loadingCondition: false})
+                        }
                     } else {
                         alert('message : ', json.message)
                         this.setState({loadingCondition: false})
@@ -145,6 +152,9 @@ class Order extends Component {
     }
 
     render(){
+        if(this.props.getTransactionStat){
+            return <Redirect to='/transaction' />
+        }
         return(
             <div>
                 {  
@@ -179,8 +189,8 @@ class Order extends Component {
                                         {
                                             this.state.loadingProduct ?
                                                 <div className='text-2xl text-black text-center focus:outline-none ml-10'
-                                                onChange={this.handleNominal}
-                                                style={{width:150}}>
+                                                    onChange={this.handleNominal}
+                                                    style={{width:150}}>
                                                     <div className='flex flex-row'>
                                                         <svg className='animate-spin h-6 w-6 mr-10 bg-black' ></svg>
                                                         Loading...
@@ -221,12 +231,26 @@ class Order extends Component {
                                 </div>
                             </form>
                             <div className='flex items-center 
-                                justify-center rounded-full bg-red-700 w-1/4 h-24
+                                justify-center rounded-full bg-red-700 w-2/4 h-24
                                 text-white text-4xl mt-14
                             '
                             onClick={this.handleSubmit}
                             >
-                                Submit
+                                {
+                                    this.state.loadingCondition ?
+                                    <div className='text-4xl text-white text-center focus:outline-none ml-4'
+                                        onChange={this.handleNominal}
+                                        style={{width:150}}
+                                    >
+                                        <div className='flex flex-row'>
+                                            <svg className='animate-spin h-10 w-10 mr-4 bg-white' ></svg>
+                                            Loading...
+                                        </div>
+                                    </div>
+                                    :
+                                    <div>Submit</div>
+                                }
+                                
                             </div>
                         </div>
                     :
@@ -277,6 +301,7 @@ class Order extends Component {
 
 const mapStateToProps=(state)=>({
     getUsername: state.forLogin.profile.username,
+    getTransactionStat: state.transaction.transactionStat
 })
 
 const mapDispatchToProps=(dispatch)=>({
@@ -287,6 +312,10 @@ const mapDispatchToProps=(dispatch)=>({
     setWallet: wallet => dispatch({
         type: 'GET_WALLET',
         wallet: wallet,
+    }),
+    setTransaction: transaction => dispatch({
+        type: 'GET_TRANSACTION',
+        receipt: transaction,
     })
 })
 

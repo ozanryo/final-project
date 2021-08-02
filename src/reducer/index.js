@@ -5,6 +5,7 @@ import EditReducer from './edit/editReducer';
 import VerifyReducer from './verifikasi/verifyReducer';
 import ProfileReducer from './profile/profileReducer';
 import WalletReducer from './wallet/walletReducer';
+import ReceiptReducer from './receipt/receipt';
 
 const CompileReducer = combineReducers({
     forLogin: LoginReducer,
@@ -13,6 +14,7 @@ const CompileReducer = combineReducers({
     verify: VerifyReducer,
     profile: ProfileReducer,
     wallet: WalletReducer,
+    transaction: ReceiptReducer,
 })
 
 export default CompileReducer;
