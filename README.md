@@ -1,6 +1,7 @@
 # Final Project Bootcamp G2Academy
 
-| Project | Branch | Language | 
+| Project | Github Branch | Language | 
 |---------|--------|----------|
 | Backend | backend | Java    |
-| Frontend - Web | frontEnd | Javascript |
+| Frontend - Web | finalProject | Javascript |
+| Frontend - Mobile | projectOneLine | Javascript |
